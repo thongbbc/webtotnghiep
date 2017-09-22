@@ -1,0 +1,21 @@
+#user{
+  margin: 0px auto;
+  height: auto;
+  width: 500px;
+  margin-top: 50px;
+  text-align: center;
+}
+#name{
+  height: 50px;
+  width: 500px;
+}
+#sendUser{
+  width: 18em;
+  text-align: center;
+  margin: 0px auto;
+  height: 4em;
+}
+#message{
+  height: 50px;
+  width: 500px;
+}

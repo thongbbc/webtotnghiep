@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head><title>Hello world</title></head>
+    <link rel="stylesheet" type="text/css" href="assets/style.css">
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+
+    </script>
+    <script src="assets/operation.js"></script>
+    <body>
+        <div id="error-container"></div>
+        <div id="user">
+        <input id="name" type="text" name="name" value="" placeholder="Enter your name!">
+        <button id="sendUser" type="button" name="button" onclick="setUsername()">Let me chat!</button>
+      </div>
+    </body>
+</html>
