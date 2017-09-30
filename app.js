@@ -156,7 +156,6 @@ app.get("/getId",function(req,res){
 		k.push({"id":data[i].id,"time":time,"date":ngay,"typeTrip":data[i].typeTrip});
     }
       res.json(k);
-    }
   })
 })
 
