@@ -13,12 +13,9 @@ var vanTaySchema = new Schema({
     mssv: String
 });
 var vanTaySchema2 = new Schema({
-    ngay:String,
     id:String,
-    tgvao: String,
-    tgra: String,
-    ngayvao: String,
-    ngayra: String
+    time: String,
+    typeTrip: Boolean
 });
 var danhSach = mongoose.model("DanhSach", vanTaySchema);
 var danhSach2 = mongoose.model("DanhSach2", vanTaySchema2);
@@ -31,6 +28,42 @@ app.set("view engine", "ejs");
 app.get('/', function(req, res) {
     res.render("index");
 });
+
+
+function getTimeStamp() {
+	return new Date().getTime() / 1000;
+}
+function getDay(timeStamp) {
+	var date = new Date(timeStamp*1000)
+	var day = date.getDate()
+	return day
+}
+function getMonth(timeStamp) {
+	var date = new Date(timeStamp*1000)
+	var month = date.getMonth() + 1
+	return month
+}
+function getYear(timeStamp) {
+	var date = new Date(timeStamp*1000)
+	var year = date.getFullYear()
+	return year
+}
+function getHours(timeStamp) {
+	var date = new Date(timeStamp*1000)
+	var hours = date.getHours()
+	return hours;
+}
+function getMinutes(timeStamp) {
+	var date = new Date(timeStamp*1000)
+	var minutes = date.getMinutes()
+	return minutes;
+}
+function getSeconds(timeStamp) {
+	var date = new Date(timeStamp*1000)
+	var seconds = date.getSeconds()	
+	return seconds;
+}
+
 
 app.get("/save1/", function(req, res) {
 //http://localhost:9999/save1/?id=1&hoten=thong&mssv=1313179
@@ -49,17 +82,16 @@ app.get("/save1/", function(req, res) {
     });
 });
 app.get("/save2/", function(req, res) {
-//http://localhost:9999/save1/?id=1&tgvao=2131&tgra=1313179&ngayvao=231&ngayra=312321
-var currDate = new Date();
+//http://localhost:9999/save2/?id=1&typeTrip=true
+
+	var timeStamp = getTimeStamp()
+	
     var danhSachs = danhSach2({
-        ngay: currDate.getDate()+":"+currDate.getMonth()+":"+currDate.getFullYear(),
         id: req.query.id,
-        tgvao: req.query.tgvao,//currDate.getHours()+":"+currDate.getMinutes()+":"+currDate.getSeconds()
-        tgra: req.query.tgra,
-        ngayvao: req.query.ngayvao,
-        ngayra: req.query.ngayra
+        time: timeStamp.toString(),//currDate.getHours()+":"+currDate.getMinutes()+":"+currDate.getSeconds()
+        typeTrip:req.query.typeTrip // true: vao  false: ra
     });
-    // //them thiet bi vao
+    // //them thiet bi vao 
     danhSachs.save(function(err) {
         if (err)  res.send("{status:\"ERROR\"}");
         console.log("Da them vao database");
@@ -104,18 +136,34 @@ app.get("/allData2",function(req,res){
     var k=[];
     for (var i=0;i<data.length;i++)
     {
-      k.push({"ngay":data[i].ngay,"id":data[i].id,"tgvao":data[i].tgvao,"tgra":data[i].tgra,"ngayvao":data[i].ngayvao,"ngayra":data[i].ngayra});
+		var timeStamp = data[i].time
+		var ngay = getDay(timeStamp) +"/"+getMonth(timeStamp)+"/"+getYear(timeStamp)
+		var time = getHours(timeStamp)+":"+getMinutes(timeStamp)+":"+getSeconds(timeStamp)
+		k.push({"id":data[i].id,"time":time,"date":ngay,"typeTrip":data[i].typeTrip});
     }
       res.json(k);
   })
 });
 
+app.get("/getId",function(req,res){
+	danhSach2.find({id: req.query.id}, function(err, data) {
+    var k=[];
+    for (var i=0;i<data.length;i++)
+    {
+		var timeStamp = data[i].time
+		var ngay = getDay(timeStamp) +"/"+getMonth(timeStamp)+"/"+getYear(timeStamp)
+		var time = getHours(timeStamp)+":"+getMinutes(timeStamp)+":"+getSeconds(timeStamp)
+		k.push({"id":data[i].id,"time":time,"date":ngay,"typeTrip":data[i].typeTrip});
+    }
+  })
+})
 
 io.on('connection', function(socket) {
     var username = "";
     console.log('A user connected');
 
 });
+
 http.listen(port, function() {
     console.log('listening on localhost:' + port);
 });
