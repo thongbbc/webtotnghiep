@@ -144,7 +144,7 @@ app.get("/allData2",function(req,res){
       res.json(k);
   })
 });
-
+//Lấy thông tin vào ra theo id
 app.get("/getId",function(req,res){
 	danhSach2.find({id: req.query.id}, function(err, data) {
     var k=[];
@@ -154,6 +154,36 @@ app.get("/getId",function(req,res){
 		var ngay = getDay(timeStamp) +"/"+getMonth(timeStamp)+"/"+getYear(timeStamp)
 		var time = getHours(timeStamp)+":"+getMinutes(timeStamp)+":"+getSeconds(timeStamp)
 		k.push({"id":data[i].id,"time":time,"date":ngay,"typeTrip":data[i].typeTrip});
+    }
+      res.json(k);
+  })
+})
+//Count vào ra vào từng ngày theo id
+app.get("/countId",function(req,res){
+	danhSach2.find({id: req.query.id}, function(err, data) {
+    var k=[];
+    var temp = data
+    for (var i=0;i<temp.length;i++)
+    {
+    	var count = 1;
+    	var id = temp[i].id
+    	var typeTrip = temp[i].typeTrip
+    	var timeStamp = temp[i].time
+		var ngay = getDay(timeStamp) +"/"+getMonth(timeStamp)+"/"+getYear(timeStamp)
+		var time = getHours(timeStamp)+":"+getMinutes(timeStamp)+":"+getSeconds(timeStamp)
+		temp.splice(i,1)
+
+    	for (var j = 0; j<temp.length;j++) {
+    		var timeStamp2= (temp[j].time)
+    		var ngay2 = getDay(timeStamp2) +"/"+getMonth(timeStamp2)+"/"+getYear(timeStamp2)
+    		if (ngay == ngay2) {
+    			count = count + 1
+       			temp.splice(j,1)
+       			j--;
+    		}
+    	}
+        		console.log(JSON.stringify(temp)+"\n\n")
+    	k.push({"id":id,"count":count,"date":ngay,"typeTrip":typeTrip});
     }
       res.json(k);
   })
