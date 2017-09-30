@@ -155,6 +155,8 @@ app.get("/getId",function(req,res){
 		var time = getHours(timeStamp)+":"+getMinutes(timeStamp)+":"+getSeconds(timeStamp)
 		k.push({"id":data[i].id,"time":time,"date":ngay,"typeTrip":data[i].typeTrip});
     }
+      res.json(k);
+    }
   })
 })
 
