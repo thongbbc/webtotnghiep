@@ -172,11 +172,23 @@ app.get("/countId",function(req,res){
 		var ngay = getDay(timeStamp) +"/"+getMonth(timeStamp)+"/"+getYear(timeStamp)
 		var time = getHours(timeStamp)+":"+getMinutes(timeStamp)+":"+getSeconds(timeStamp)
 		temp.splice(i,1)
+		i--;
 
     	for (var j = 0; j<temp.length;j++) {
     		var timeStamp2= (temp[j].time)
     		var ngay2 = getDay(timeStamp2) +"/"+getMonth(timeStamp2)+"/"+getYear(timeStamp2)
-    		if (ngay == ngay2) {
+    		var typeTrip2 = temp[j].typeTrip
+    		if (ngay == ngay2 && typeTrip == typeTrip2 && typeTrip == true) {
+    			count = count + 1
+       			temp.splice(j,1)
+       			j--;
+    		}
+    	}
+    	for (var j = 0; j<temp.length;j++) {
+    		var timeStamp2= (temp[j].time)
+    		var ngay2 = getDay(timeStamp2) +"/"+getMonth(timeStamp2)+"/"+getYear(timeStamp2)
+    		var typeTrip2 = temp[j].typeTrip
+    		if (ngay == ngay2 && typeTrip == typeTrip2 && typeTrip == false) {
     			count = count + 1
        			temp.splice(j,1)
        			j--;
