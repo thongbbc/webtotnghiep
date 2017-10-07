@@ -17,6 +17,11 @@ var vanTaySchema2 = new Schema({
     time: String,
     typeTrip: Boolean
 });
+var accountSchema = new Schema({
+    username:String,
+    password: String
+});
+var account = mongoose.model("Account",accountSchema);
 var danhSach = mongoose.model("DanhSach", vanTaySchema);
 var danhSach2 = mongoose.model("DanhSach2", vanTaySchema2);
 
@@ -60,11 +65,53 @@ function getMinutes(timeStamp) {
 }
 function getSeconds(timeStamp) {
 	var date = new Date(timeStamp*1000)
-	var seconds = date.getSeconds()	
+	var seconds = date.getSeconds()
 	return seconds;
 }
 
-
+app.get("/signUp/",function(req,res){
+  var account2 = account({
+      username: req.query.username,
+      password: req.query.password
+  });
+  account2.save(function(err) {
+      if (err) res.send("{status:\"ERROR\"}");
+      console.log("Da them vao database");
+      res.send("{status:\"OK\"}");
+  });
+});
+app.get("/account",function(req,res){
+  account.find({}, function(err, data) {
+    if (err) res.send("{status:\"ERROR\"}");
+    var k=[];
+    for (var i=0;i<data.length;i++)
+    {
+      k.push({"username":data[i].username,"password":data[i].password});
+    }
+      res.json(k);
+  })
+});
+app.get("/getUsername/",function(req,res){
+  account.find({username:req.query.username}, function(err, data) {
+    if (err) res.send("{status:\"ERROR\"}");
+    var k=[];
+    for (var i=0;i<data.length;i++)
+    {
+      k.push({"username":data[i].username,"password":data[i].password});
+    }
+      res.json(k);
+  })
+});
+app.get("/removeAccount",function(req,res){
+  account.remove({}, function(err) {
+     if (!err) {
+        res.send("{status:\"OK\"}");
+     }
+        else {
+         res.send("{status:\"ERROR\"}");
+        }
+    });
+});
 app.get("/save1/", function(req, res) {
 //http://localhost:9999/save1/?id=1&hoten=thong&mssv=1313179
     var currDate = new Date();
@@ -85,13 +132,13 @@ app.get("/save2/", function(req, res) {
 //http://localhost:9999/save2/?id=1&typeTrip=true
 
 	var timeStamp = getTimeStamp()
-	
+
     var danhSachs = danhSach2({
         id: req.query.id,
         time: timeStamp.toString(),//currDate.getHours()+":"+currDate.getMinutes()+":"+currDate.getSeconds()
         typeTrip:req.query.typeTrip // true: vao  false: ra
     });
-    // //them thiet bi vao 
+    // //them thiet bi vao
     danhSachs.save(function(err) {
         if (err)  res.send("{status:\"ERROR\"}");
         console.log("Da them vao database");
