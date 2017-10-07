@@ -75,14 +75,14 @@ app.get("/signUp/",function(req,res){
       password: req.query.password
   });
   account2.save(function(err) {
-      if (err) res.send("{status:"ERROR"}");
+      if (err) res.send({status:"ERROR"});
       console.log("Da them vao database");
       res.send({status:"OK"});
   });
 });
 app.get("/account",function(req,res){
   account.find({}, function(err, data) {
-    if (err) res.send("{status:"ERROR"}");
+    if (err) res.send({status:"ERROR"});
     var k=[];
     for (var i=0;i<data.length;i++)
     {
@@ -93,7 +93,7 @@ app.get("/account",function(req,res){
 });
 app.get("/getUsername/",function(req,res){
   account.find({username:req.query.username}, function(err, data) {
-    if (err) res.send("{status:"ERROR"}");
+    if (err) res.send({status:"ERROR"});
     var k=[];
     for (var i=0;i<data.length;i++)
     {
@@ -105,10 +105,10 @@ app.get("/getUsername/",function(req,res){
 app.get("/removeAccount",function(req,res){
   account.remove({}, function(err) {
      if (!err) {
-        res.send("{status:"OK"}");
+        res.send({status:"OK"});
      }
         else {
-         res.send("{status:"ERROR"}");
+         res.send({status:"ERROR"});
         }
     });
 });
@@ -122,10 +122,10 @@ app.get("/save1/", function(req, res) {
     });
     // //them thiet bi vao
     danhSachs.save(function(err) {
-        if (err) res.send("{status:"ERROR"}");
+        if (err) res.send({status:"ERROR"});
 
         console.log("Da them vao database");
-        res.send("{status:"OK"}");
+        res.send({status:"OK"});
     });
 });
 app.get("/save2/", function(req, res) {
@@ -150,20 +150,20 @@ app.get("/save2/", function(req, res) {
 app.get("/remove1",function(req,res){
   danhSach.remove({}, function(err) {
      if (!err) {
-        res.send("{status:"OK"}");
+        res.send({status:"OK"});
      }
         else {
-         res.send("{status:"ERROR"}");
+         res.send({status:"ERROR"});
         }
     });
 })
 app.get("/remove2",function(req,res){
   danhSach2.remove({}, function(err) {
      if (!err) {
-        res.send("{status:"OK"}");
+        res.send({status:"OK"});
      }
         else {
-         res.send("{status:"ERROR"}");
+         res.send({status:"ERROR"});
         }
     });
 })
