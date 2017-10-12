@@ -21,9 +21,16 @@ var accountSchema = new Schema({
     username:String,
     password: String
 });
+var monHocSchema = new Schema({
+    tenmonhoc:String,
+    timestart: String,
+    timeend:String,
+    thu:String
+});
 var account = mongoose.model("Account",accountSchema);
 var danhSach = mongoose.model("DanhSach", vanTaySchema);
 var danhSach2 = mongoose.model("DanhSach2", vanTaySchema2);
+var monhoc = mongoose.model("MonHoc",monHocSchema);
 
 mongoose.connect("mongodb://root:123@ds147044.mlab.com:47044/vantay");
 
@@ -69,6 +76,48 @@ function getSeconds(timeStamp) {
 	return seconds;
 }
 
+
+///-----------------------------------------------MON HOC API
+//API xoa Mon HOC
+
+app.get("/removeAllMonHoc",function(req,res){
+	monhoc.remove({}, function(err) {
+     if (!err) {
+        res.send({status:"OK"});
+     }
+        else {
+         res.send({status:"ERROR"});
+        }
+    });
+});
+//Api Lay mon hoc
+app.get("/monHoc",function(req,res){
+	monhoc.find({}, function(err, data) {
+    if (err) res.send({status:"ERROR"});
+    var k=[];
+    for (var i=0;i<data.length;i++)
+    {
+      k.push({"tenMonHoc":data[i].tenmonhoc,"timeStart":data[i].timestart,"timeEnd":data[i].timeend,"thu":data[i].thu});
+    }
+      res.json(k);
+  })
+});
+
+app.get("/saveMonHoc/",function(req,res){
+	var monHoc2 = monhoc({
+      tenmonhoc: req.query.tenmonhoc,
+      timestart: req.query.timestart,
+      timeend:req.query.timeend,
+      thu:req.query.thu
+  });
+  monHoc2.save(function(err) {
+      if (err) res.send({status:"ERROR"});
+      console.log("Da them vao database");
+      res.send({status:"OK"});
+  });
+});
+///-----------------------------------------------SIGN UP API
+
 app.get("/signUp/",function(req,res){
   var account2 = account({
       username: req.query.username,
@@ -80,6 +129,7 @@ app.get("/signUp/",function(req,res){
       res.send({status:"OK"});
   });
 });
+
 app.get("/account",function(req,res){
   account.find({}, function(err, data) {
     if (err) res.send({status:"ERROR"});
@@ -112,6 +162,8 @@ app.get("/removeAccount",function(req,res){
         }
     });
 });
+///-----------------------------------------------SAVE Danh SACH SV API
+
 app.get("/save1/", function(req, res) {
 //http://localhost:9999/save1/?id=1&hoten=thong&mssv=1313179
     var currDate = new Date();
@@ -128,6 +180,8 @@ app.get("/save1/", function(req, res) {
         res.send({status:"OK"});
     });
 });
+///-----------------------------------------------SAVE Lich su ra vao API
+
 app.get("/save2/", function(req, res) {
 //http://localhost:9999/save2/?id=1&typeTrip=true
 
@@ -147,7 +201,7 @@ app.get("/save2/", function(req, res) {
 });
 
 
-app.get("/remove1",function(req,res){
+app.get("/removeDanhSach",function(req,res){
   danhSach.remove({}, function(err) {
      if (!err) {
         res.send({status:"OK"});
@@ -157,7 +211,7 @@ app.get("/remove1",function(req,res){
         }
     });
 })
-app.get("/remove2",function(req,res){
+app.get("/removeLichSu",function(req,res){
   danhSach2.remove({}, function(err) {
      if (!err) {
         res.send({status:"OK"});
