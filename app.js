@@ -27,10 +27,20 @@ var monHocSchema = new Schema({
     timeend:String,
     thu:String
 });
+var dangKyMonHoc = new Schema({
+	id:String,
+	hoten:String,
+	tenmonhoc:String,
+	timestart:String,
+	timeend:String,
+	thu:String,
+	nghihoc:Boolean
+})
 var account = mongoose.model("Account",accountSchema);
 var danhSach = mongoose.model("DanhSach", vanTaySchema);
 var danhSach2 = mongoose.model("DanhSach2", vanTaySchema2);
 var monhoc = mongoose.model("MonHoc",monHocSchema);
+var dangKyMon = mongoose.model("DangKyMonHoc",dangKyMonHoc);
 
 mongoose.connect("mongodb://root:123@ds147044.mlab.com:47044/vantay");
 
@@ -75,8 +85,46 @@ function getSeconds(timeStamp) {
 	var seconds = date.getSeconds()
 	return seconds;
 }
-
-
+//Dang ky mon hoc cho sinh vien
+app.get("/removeAllDangKyMon",function(req,res){
+	dangKyMon.remove({}, function(err) {
+     if (!err) {
+        res.send({status:"OK"});
+     }
+        else {
+         res.send({status:"ERROR"});
+        }
+    });
+});
+app.get("/dangKyMonHoc",function(req,res){
+	dangKyMon.find({}, function(err, data) {
+    if (err) res.send({status:"ERROR"});
+    var k=[];
+    for (var i=0;i<data.length;i++)
+    {
+      k.push({"id":data[i].id,"hoten":data[i].hoten,"mssv":data[i].mssv,"tenMonHoc":data[i].tenmonhoc,"timeStart":data[i].timestart,"timeEnd":data[i].timeend,"thu":data[i].thu,"nghihoc":data[i].nghihoc});
+    }
+      res.json(k);
+  })
+});
+//localhost:9999/saveDangKyMon/?id=1&hoten=nguyenanhthong&mssv=1313179&tenmonhoc=hoa&timestart=1234&timeend=1345&thu=Mon
+app.get("/saveDangKyMon/",function(req,res){
+	var dangKyMon2 = dangKyMon({
+    	id:req.query.id,
+		hoten:req.query.hoten,
+		mssv:req.query.mssv,
+		tenmonhoc:req.query.tenmonhoc,
+		timestart:req.query.timestart,
+		timeend:req.query.timeend,
+		thu:req.query.thu,
+		nghihoc:false
+  });
+  dangKyMon2.save(function(err) {
+      if (err) res.send({status:"ERROR"});
+      console.log("Da them vao database");
+      res.send({status:"OK"});
+  });
+});
 ///-----------------------------------------------MON HOC API
 //API xoa Mon HOC
 
@@ -90,6 +138,8 @@ app.get("/removeAllMonHoc",function(req,res){
         }
     });
 });
+
+
 //Api Lay mon hoc
 app.get("/monHoc",function(req,res){
 	monhoc.find({}, function(err, data) {
