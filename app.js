@@ -107,6 +107,26 @@ app.get("/dangKyMonHoc",function(req,res){
       res.json(k);
   })
 });
+app.get("/saveJsonDangKyMon/",function(req,res){
+	var jsonObject = JSON.parse(req.query.json)
+	jsonObject.map((value,index) => {
+		var dangKyMon2 = dangKyMon({
+	    	id:value.id,
+			hoten:value.hoten,
+			mssv:value.mssv,
+			tenmonhoc:value.tenmonhoc,
+			timestart:value.timestart,
+			timeend:value.timeend,
+			thu:value.thu,
+			nghihoc:false
+		});
+		dangKyMon2.save(function(err) {
+		    if (err) {res.send({status:"ERROR"})};
+		    console.log("Da them vao database");
+		});
+	})
+	res.send({status:"OK"});
+})
 //localhost:9999/saveDangKyMon/?id=1&hoten=nguyenanhthong&mssv=1313179&tenmonhoc=hoa&timestart=1234&timeend=1345&thu=Mon
 app.get("/saveDangKyMon/",function(req,res){
 	var dangKyMon2 = dangKyMon({
@@ -152,7 +172,7 @@ app.get("/monHoc",function(req,res){
       res.json(k);
   })
 });
-
+//    /saveMonHoc/?tenmonhoc=hoa&timestart=12&timeend=1321&thu=Mon
 app.get("/saveMonHoc/",function(req,res){
 	var monHoc2 = monhoc({
       tenmonhoc: req.query.tenmonhoc,
