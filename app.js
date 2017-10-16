@@ -88,7 +88,7 @@ function getSeconds(timeStamp) {
 //API xoa dang ky mon hoc toan bo co ten mon hoc la 
 // /removeDangKyMonHoc/?monHoc=hoa
 app.get("/removeDangKyMonHoc/",function(req,res){
-	monhoc.remove({req.query.monHoc}, function(err) {
+	dangKyMon.remove({tenmonhoc:req.query.monHoc}, function(err) {
      if (!err) {
         res.send({status:"OK"});
      }
@@ -127,7 +127,7 @@ app.get("/saveJsonDangKyMon/",function(req,res){
 		var dangKyMon2 = dangKyMon({
 	    	id:value.id,
 			hoten:value.hoten,
-			mssv:value.mss
+			mssv:value.mssv,
 			tenmonhoc:value.tenMonHoc,
 			timestart:value.timeStart,
 			timeend:value.timeEnd,
