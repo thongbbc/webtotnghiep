@@ -126,7 +126,7 @@ app.get("/dangKyMonHoc",function(req,res){
   })
 });
 //  /saveJsonDangKyMon/?=[{"id":"2","hoten":"nguyenanhthong","mssv":"1313179","tenMonhoc":"hoa","timeStart":"321312","timeEnd":"312312","thu":"Mon"}]
-app.get("/saveJsonDangKyMjsonon/",function(req,res){
+app.get("/saveJsonDangKyMon/",function(req,res){
 	var jsonObject = JSON.parse(req.query.json)
 	jsonObject.map((value,index) => {
 		var dangKyMon2 = dangKyMon({
