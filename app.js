@@ -88,13 +88,18 @@ function getSeconds(timeStamp) {
 //API xoa dang ky mon hoc toan bo co ten mon hoc la 
 // /removeDangKyMonHoc/?monHoc=hoa
 app.get("/removeDangKyMonHoc/",function(req,res){
-	dangKyMon.remove({tenmonhoc:req.query.monHoc}, function(err) {
-     if (!err) {
-        res.send({status:"OK"});
-     }
-        else {
-         res.send({status:"ERROR"});
-        }
+	dangKyMon.find({tenmonhoc:req.query.monHoc}, function(err,data) {
+	 if (!err) {
+	 	dangKyMon.remove({tenmonhoc:req.query.monHoc},function(err){
+	 		if (!err)
+	    		res.send({status:"OK"});
+	    	else 
+	    		res.send({status:"ERROR"})
+	 	})
+	 }
+    else {
+     	res.send({status:"ERROR"});
+    }
     });
 });
 
@@ -120,8 +125,8 @@ app.get("/dangKyMonHoc",function(req,res){
       res.json(k);
   })
 });
-//  /saveJsonDangKyMon/?json=[{"id":"2","hoten":"nguyenanhthong","mssv":"1313179","tenMonhoc":"hoa","timeStart":"321312","timeEnd":"312312","thu":"Mon"}]
-app.get("/saveJsonDangKyMon/",function(req,res){
+//  /saveJsonDangKyMon/?=[{"id":"2","hoten":"nguyenanhthong","mssv":"1313179","tenMonhoc":"hoa","timeStart":"321312","timeEnd":"312312","thu":"Mon"}]
+app.get("/saveJsonDangKyMjsonon/",function(req,res){
 	var jsonObject = JSON.parse(req.query.json)
 	jsonObject.map((value,index) => {
 		var dangKyMon2 = dangKyMon({
