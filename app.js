@@ -85,6 +85,19 @@ function getSeconds(timeStamp) {
 	var seconds = date.getSeconds()
 	return seconds;
 }
+//API xoa dang ky mon hoc toan bo co ten mon hoc la 
+// /removeDangKyMonHoc/?monHoc=hoa
+app.get("/removeDangKyMonHoc/",function(req,res){
+	monhoc.remove({req.query.monHoc}, function(err) {
+     if (!err) {
+        res.send({status:"OK"});
+     }
+        else {
+         res.send({status:"ERROR"});
+        }
+    });
+});
+
 //Dang ky mon hoc cho sinh vien
 app.get("/removeAllDangKyMon",function(req,res){
 	dangKyMon.remove({}, function(err) {
@@ -114,7 +127,7 @@ app.get("/saveJsonDangKyMon/",function(req,res){
 		var dangKyMon2 = dangKyMon({
 	    	id:value.id,
 			hoten:value.hoten,
-			mssv:value.mssv,
+			mssv:value.mss
 			tenmonhoc:value.tenMonHoc,
 			timestart:value.timeStart,
 			timeend:value.timeEnd,
@@ -146,7 +159,10 @@ app.get("/saveDangKyMon/",function(req,res){
       res.send({status:"OK"});
   });
 });
+
+
 ///-----------------------------------------------MON HOC API
+
 //API xoa Mon HOC
 
 app.get("/removeAllMonHoc",function(req,res){
