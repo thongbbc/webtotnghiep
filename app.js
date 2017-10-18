@@ -45,10 +45,12 @@ var dangKyMon = mongoose.model("DangKyMonHoc",dangKyMonHoc);
 mongoose.connect("mongodb://root:123@ds147044.mlab.com:47044/vantay");
 
 
-app.use("/assets", express.static(__dirname + "/publics"));
 app.set("view engine", "ejs");
+app.set("views","./views");
+app.use(express.static("public"));
+
 app.get('/', function(req, res) {
-    res.render("index");
+    res.render("trangchu");
 });
 
 
