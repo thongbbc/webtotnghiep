@@ -1,5 +1,4 @@
 
-
 class RowData extends React.Component {
 
 	constructor(props) {
@@ -98,10 +97,21 @@ class RowData extends React.Component {
 	}
 }
 class Header extends React.Component {
+	_onClickSignIn() {
+		window.location.assign("http://localhost:9999/signIn")
+	}
+	_onClickSignUp() {
+	}
 	render() {
 		return(
-			<div style={{height:'100%',backgroundColor:'black',alignItems:'center',justifyContent:'center'}}>
-				<p style={{height:'50%',padding:20,justifyContent:'center',margin:'auto',fontSize:15,width:'100%',color:'white',fontWeight:'bold'}}>VLTH Nguyen Anh Thong</p>
+			<div style={{height:'100%',flexDirection:'row',backgroundColor:'black',alignItems:'center',justifyContent:'center'}}>
+				<div style={{float:'left',height:null,padding:20,justifyContent:'center',position:'relative',margin:'auto',fontSize:15,width:'80%',color:'white',fontWeight:'bold'}}>VLTH {user}</div>
+				<div style={{textAlign:'center',position:'absolute',top:20,right:0,width:'20%'}}>
+					<div style={{display:'inline-block'}}>
+						<button onClick = {this._onClickSignIn.bind(this)} style={{float:'left',width:100,height:30}}>SIGN IN</button>
+						<button onClick = {this._onClickSignUp.bind(this)} style={{float:'left',width:100,height:30}}>SIGN UP</button>
+					</div>
+				</div>
 			</div>
 		)
 	}

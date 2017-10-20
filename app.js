@@ -4,6 +4,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 9999;
 var mongoose = require("mongoose");
+var bodyParser=require("body-parser")
+var urlencodedParser=bodyParser.urlencoded({extended:false})
 
 var Schema = mongoose.Schema;
 
@@ -49,6 +51,30 @@ app.set("view engine", "ejs");
 app.set("views","./views");
 app.use(express.static("public"));
 
+app.post("/trangchu",urlencodedParser,function(req,res){
+  console.log(req.body.username)
+  account.find({username:req.body.username}, function(err, data) {
+    if (err) res.send('{\"status\":\"ERROR\"}')
+    var k=[];
+    for (var i=0;i<data.length;i++)
+    {
+      k.push({username:data[i].username,password:data[i].password});
+    }
+    if (k.length == 0) {
+      res.send('{\"status\":\"ERROR\"}')
+    } else {
+      if (req.body.password != data[0].password) {
+        res.render('signIn',{check:1})
+      } else {
+        res.render('trangchu',{username:req.body.username})
+      }
+    }
+  })
+})
+app.get('/signIn',function(req,res) {
+  res.render('signIn',{check:0})
+})
+
 app.get('/', function(req, res) {
     res.render("trangchu");
 });
@@ -87,7 +113,7 @@ function getSeconds(timeStamp) {
 	var seconds = date.getSeconds()
 	return seconds;
 }
-//API xoa dang ky mon hoc toan bo co ten mon hoc la 
+//API xoa dang ky mon hoc toan bo co ten mon hoc la
 // /removeDangKyMonHoc/?monHoc=hoa
 app.get("/removeDangKyMonHoc/",function(req,res){
 	dangKyMon.find({tenmonhoc:req.query.monHoc}, function(err,data) {
@@ -95,7 +121,7 @@ app.get("/removeDangKyMonHoc/",function(req,res){
 	 	dangKyMon.remove({tenmonhoc:req.query.monHoc},function(err){
 	 		if (!err)
 	    		res.send({status:"OK"});
-	    	else 
+	    	else
 	    		res.send({status:"ERROR"})
 	 	})
 	 }
