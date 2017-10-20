@@ -16,21 +16,24 @@ class Main extends React.Component {
   }
   render() {
     return(
-      <div style={{height:'100%',width:'100%',textAlign:'center'}}>
-        <div style={{width:400,height:'auto',margin:'auto',padding:10}}>
-          <div style={{marginTop:100,height:50,width:'100%',backgroundColor:'white'}}>
-            <div style={{margin:'auto',width:100,top:25,padding:15}}>
-              <span style={{color:'#00B5AD',fontWeight:'bold'}}>SIGN IN</span>
-            </div>
-          </div>
-          <div style={{marginTop:20,height:'auto',width:'100%',backgroundColor:'white'}}>
-            <form ref='form' action="http://localhost:9999/trangchu" method="post">
-              <input placeholder="Username" ref='user' name="username" style={{width:'80%',margin:0,marginTop:50,padding:10}}/>
-              <input placeholder="Password" ref='pass' name="password" style={{width:'80%',margin:0,marginTop:20,padding:10}}/>
-              <div style={{width:'100%',margin:0,marginTop:20}}>
-                <button onClick={this._onClickSignIn.bind(this)} style={{backgroundColor:'#00B5AD',flex:1,color:'white',fontSize:15,fontWeight:'bold',padding:10,margin:10,marginTop:20}}>SIGN IN</button>
+      <div class="container">
+        <div class="card card-login mx-auto mt-5">
+          <div class="card-header">Login</div>
+          <div class="card-body">
+            <form ref = 'form' action='http://localhost:9999/trangchu' method='post'>
+              <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input ref = 'user' name='username' class="form-control" id="exampleInputEmail1" type="email" aria-describedby="emailHelp" placeholder="Enter email"/>
               </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input ref = 'pass'  name='password' class="form-control" id="exampleInputPassword1" type="password" placeholder="Password"/>
+              </div>
+              <a class="btn btn-primary btn-block" style={{color:'white'}} onClick={this._onClickSignIn.bind(this)}>Login</a>
             </form>
+            <div class="text-center">
+              <a class="d-block small mt-3" href="register.html">Register an Account</a>
+            </div>
           </div>
         </div>
       </div>
@@ -38,7 +41,5 @@ class Main extends React.Component {
   }
 }
 ReactDOM.render(
-	<div style={{height:'100%',width:'100%',backgroundColor: 'rgba(0,0,0,0.2)'}}>
 		<Main/>
-	</div>
 ,document.getElementById("root"));
