@@ -8,7 +8,10 @@ class RowData extends React.Component {
 			animating:true,
 			kindScreen:0,
 			dataSourceDanhSachRaVao:[],
-			dataSourceListSubject:[]
+			dataSourceListSubject:[],
+			dataSourceRegisterSubject:[],
+			selectedSubject:'',
+			arrayMonHoc: []
 		}
 	}
 	componentDidMount() {
@@ -43,6 +46,7 @@ class RowData extends React.Component {
 		  	}
 		});
 	}
+
 	_onPressItem(data,index) {
 		alert('Click')
 	}
@@ -73,7 +77,7 @@ class RowData extends React.Component {
 		}
 	}
 
-	_onPressRemoveSV(value) {
+	_onPressDELETESV(value) {
 		const self= this
 		var params = new URLSearchParams();
 		params.append('id', value.id);
@@ -93,7 +97,7 @@ class RowData extends React.Component {
 
 	}
 
-	_onPressRemoveSubject(value) {
+	_onPressDELETESubject(value) {
 		const self= this
 		var params = new URLSearchParams();
 		params.append('tenmonhoc', value.tenMonHoc);
@@ -153,9 +157,9 @@ class RowData extends React.Component {
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.hoten}</div></td>
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.mssv}</div></td>
 						<td >
-							<div style={{flex:1,alignItems:'center',textAlign:'center'}}>
-								<button onClick={this._onPressItem.bind(this,value,index)} style={{flex:1,alignItems:'center',textAlign:'center'}}>SEEN</button>
-								<button onClick={this._onPressRemoveSV.bind(this,value,index)} style={{flex:1,alignItems:'center',textAlign:'center'}}>REMOVE</button>
+							<div style={{flex:1,alignItems:'center',textAlign:'center',height:'100%',width:'100%'}}>
+								<button onClick={this._onPressItem.bind(this,value,index)} style={{flex:1,alignItems:'center',textAlign:'center',height:'100%',width:'50%',display: 'inline-block'}}>SEEN</button>
+								<button onClick={this._onPressDELETESV.bind(this,value,index)} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'50%',display: 'inline-block'}}>DELETE</button>
 							</div>
 						</td>
 					</tr>
@@ -167,9 +171,9 @@ class RowData extends React.Component {
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.hoten}</div></td>
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.mssv}</div></td>
 						<td >
-							<div style={{flex:1,alignItems:'center',textAlign:'center'}}>
-								<button onClick={this._onPressItem.bind(this,value,index)} style={{flex:1,alignItems:'center',textAlign:'center'}}>SEEN</button>
-								<button onClick={this._onPressRemoveSV.bind(this,value,index)} style={{flex:1,alignItems:'center',textAlign:'center'}}>REMOVE</button>
+							<div style={{display:'block',width:'100%',height:'100%',alignItems:'center',textAlign:'center'}}>
+								<button onClick={this._onPressItem.bind(this,value,index)} style={{flex:1,alignItems:'center',textAlign:'center',height:'100%',width:'50%',display: 'inline-block'}}>SEEN</button>
+								<button onClick={this._onPressDELETESV.bind(this,value,index)} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',flex:1,alignItems:'center',textAlign:'center',height:'100%',width:'50%',display: 'inline-block'}}>DELETE</button>
 							</div>
 						</td>
 					</tr>
@@ -181,7 +185,7 @@ class RowData extends React.Component {
 	_renderDashBoard() {
 		return(
 			<div>
-				<table style={{width:"100%"}}>
+				<table style={{width:"100%",height:'100%'}}>
 					<thead>
 						<tr style={{color:'white',backgroundColor:'#157F90',height:50}}>
 							<th>ID</th>
@@ -295,8 +299,8 @@ class RowData extends React.Component {
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.timeEnd}</div></td>
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.thu}</div></td>
 						<td >
-							<div style={{flex:1,alignItems:'center',textAlign:'center'}}>
-								<button onClick={this._onPressRemoveSubject.bind(this,value,index)} style={{flex:1,alignItems:'center',textAlign:'center'}}>REMOVE</button>
+							<div style={{flex:1,width:'100%',height:'100%',alignItems:'center',textAlign:'center'}}>
+								<button onClick={this._onPressDELETESubject.bind(this,value,index)} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>DELETE</button>
 							</div>
 						</td>
 					</tr>
@@ -309,8 +313,8 @@ class RowData extends React.Component {
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.timeEnd}</div></td>
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.thu}</div></td>
 						<td >
-							<div style={{flex:1,alignItems:'center',textAlign:'center'}}>
-								<button onClick={this._onPressRemoveSubject.bind(this,value,index)} style={{flex:1,alignItems:'center',textAlign:'center'}}>REMOVE</button>
+							<div style={{height:'100%',width:'100%',alignItems:'center',textAlign:'center'}}>
+								<button onClick={this._onPressDELETESubject.bind(this,value,index)} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>DELETE</button>
 							</div>
 						</td>
 					</tr>
@@ -322,7 +326,7 @@ class RowData extends React.Component {
 	_renderListSubject(){
 		return(
 			<div>
-				<table style={{width:"100%"}}>
+				<table style={{height:'100%',width:"100%"}}>
 					<thead>
 						<tr style={{color:'white',backgroundColor:'#157F90',height:50}}>
 							<th>NAMESUBJECT</th>
@@ -413,6 +417,126 @@ class RowData extends React.Component {
 			</div>
 		)
 	}
+	_renderAllMonHoc() {
+		const {arrayMonHoc} = this.state
+		var dulieu = []
+		for (var i =0 ;i<arrayMonHoc.length ;i++) {
+			dulieu.push(<option key={i}  value={arrayMonHoc[i].tenMonHoc}>{arrayMonHoc[i].tenMonHoc}</option>)
+		}
+		return dulieu
+	}
+	_onChangeSelected(index1) {
+		var dulieu = []
+		const {dataSourceRegisterSubject} = this.state
+		dataSourceRegisterSubject.map ((value,index) => {
+			if (index == index1) {
+				value.check = ! value.check
+			}
+			dulieu.push(value)
+		})
+		this.setState({dataSourceRegisterSubject:dulieu})
+	}
+	_renderRowRegisterSubject() {
+		const {dataSourceRegisterSubject} = this.state
+		var dulieu = []
+		if (dataSourceRegisterSubject.length != 0 ){
+			dataSourceRegisterSubject.map((value,index) => {
+				if(value.check == undefined) value.check= false
+				if (index%2 == 0) {
+					dulieu.push(
+						<tr key={index} style={{backgroundColor:'#EAF3F3',height:50}}>
+							<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.id}</div></td>
+							<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.hoten}</div></td>
+							<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.mssv}</div></td>
+							<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>
+								<input type="checkbox" onChange={this._onChangeSelected.bind(this,index)} checked={value.check}/>
+							</div></td>
+						</tr>
+					)
+				} else {
+					dulieu.push(
+						<tr key={index} style={{backgroundColor:'white',height:50}}>
+							<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.id}</div></td>
+							<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.hoten}</div></td>
+							<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.mssv}</div></td>
+							<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>
+								<input type="checkbox" onChange={this._onChangeSelected.bind(this,index)} checked={value.check}/>
+							</div></td>
+						</tr>
+					)
+				}
+			})
+		}
+		return dulieu
+	}
+	handleChangeSelectedMonHoc(event) {
+		const self=this
+		self.setState({selectedSubject:event.target.value})
+		axios({
+		method:'get',
+		url:'/allData1',
+		responseType:'jsonp'
+		})
+		.then(function(response1) {
+			if (response1.status == 200) {
+				axios({
+				method:'get',
+				url:'/dangKyMonHoc',
+				responseType:'jsonp'
+				})
+				.then(function(response) {
+					if (response.status == 200) {
+						const {selectedSubject} = self.state
+						var data1 = response1.data
+						var data = response.data
+						data1.map((value) => {
+							value.check = false
+							data.map((value2) => {
+								if (value.id == value2.id && selectedSubject == value2.tenMonHoc) {
+									value.tenMonHoc = selectedSubject,
+									value.timeStart = value2.timeStart,
+									value.timeEnd = value2.timeEnd,
+									value.thu = value2.thu,
+									value.check = true
+								}
+							})
+						})
+						alert(JSON.stringify(data1))
+						self.setState({
+							dataSourceRegisterSubject:data1,
+							animating:false
+						})
+					} else {
+
+					}
+				});
+			}
+		});
+	}
+	_renderRegisterSubjectSV() {
+		return(
+			<div>
+				<select style={{height:50,width:200}} onChange={this.handleChangeSelectedMonHoc.bind(this)}>
+					{this._renderAllMonHoc()}
+				</select>
+				<table style={{width:"100%"}}>
+					<thead>
+						<tr style={{color:'white',backgroundColor:'#157F90',height:50}}>
+							<th>ID</th>
+							<th>NAME</th>
+							<th>MSSV</th>
+							<th>IS REGISTER</th>
+						</tr>
+					</thead>
+					<tbody>
+						{this._renderRowRegisterSubject()}
+					</tbody>
+				</table>
+				{this._renderLoading()}
+			</div>
+		)
+	}
+
 	_renderScreen() {
 		const {kindScreen} = this.state
 		if (kindScreen == 0) {
@@ -425,6 +549,8 @@ class RowData extends React.Component {
 			return this._renderListSubject()
 		} else if(kindScreen == 4) {
 			return this._renderAddSubject()
+		} else if (kindScreen == 5 ) {
+			return this._renderRegisterSubjectSV()
 		}
 	}
 	_loadDataDanhSachRaVao() {
@@ -474,7 +600,67 @@ class RowData extends React.Component {
 		  	}
 		});
 	}
+	_loadRegisterSubject() {
+		const self = this
+			axios({
+			method:'get',
+			url:'/monHoc',
+			responseType:'jsonp'
+		}).then(function(responseMonHoc) {
+			if (responseMonHoc.status == 200) {
+				var monHoc = responseMonHoc.data
+				if (monHoc.length !=0){
+					self.setState({arrayMonHoc:monHoc,selectedSubject:monHoc[0].tenMonHoc})
+					axios({
+					method:'get',
+					url:'/allData1',
+					responseType:'jsonp'
+					})
+					.then(function(response1) {
+						if (response1.status == 200) {
+							axios({
+							method:'get',
+							url:'/dangKyMonHoc',
+							responseType:'jsonp'
+							})
+							.then(function(response) {
+								if (response.status == 200) {
+									const {selectedSubject} = self.state
+									var data1 = response1.data
+									var data = response.data
+									data1.map((value) => {
+										value.check == false
+										data.map((value2) => {
+											if (value.id == value2.id && selectedSubject == value2.tenMonHoc) {
+												value.tenMonHoc = selectedSubject,
+												value.timeStart = value2.timeStart,
+												value.timeEnd = value2.timeEnd,
+												value.thu = value2.thu,
+												value.check = true
+											}
+										})
+									})
+									self.setState({
+										dataSourceRegisterSubject:data1,
+										animating:false
+									})
+								} else {
 
+								}
+							});
+						}
+					});
+				} else {
+					alert("HAVEN'T ANY SUBJECT")
+				}
+			}
+		})
+
+	}
+	_onPressRegisterSubjectSV() {
+		this.setState({kindScreen:5})
+		this._loadRegisterSubject()
+	}
 	_onPressAddSubject() {
 		this.setState({kindScreen:4})
 	}
@@ -504,6 +690,10 @@ class RowData extends React.Component {
 					<hr/>
 					<p onClick={this._onPressListSubject.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>LISTSUBJECT</p>
 					<p onClick={this._onPressAddSubject.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>ADDSUBJECT</p>
+					<p onClick={this._onPressRegisterSubjectSV.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>REGISTERSUBJECT</p>
+					<p onClick={this._onPressAddSubject.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>NULL</p>
+					<p onClick={this._onPressAddSubject.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>NULL</p>
+
 				</div>
 				<div style={{float:'left',width:'80%',height:'95%'}} >
 					{this._renderScreen()}
@@ -523,7 +713,7 @@ class Header extends React.Component {
 	}
 	render() {
 		return(
-			<div style={{height:'100%',flexDirection:'row',backgroundColor:'black',alignItems:'center',justifyContent:'center'}}>
+			<div style={{height:'100%',flexDirection:'row',backgroundColor:'#157F90',alignItems:'center',justifyContent:'center'}}>
 				<div style={{float:'left',height:null,padding:20,justifyContent:'center',position:'relative',margin:'auto',fontSize:15,width:'80%',color:'white',fontWeight:'bold'}}>VLTH {user}</div>
 				<div style={{textAlign:'center',position:'absolute',top:20,right:0,width:'20%'}}>
 					<div style={{display:'inline-block'}}>
