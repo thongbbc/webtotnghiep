@@ -197,7 +197,21 @@ app.get("/saveDangKyMon/",function(req,res){
 ///-----------------------------------------------MON HOC API
 
 //API xoa Mon HOC
-
+app.post("/deleteSubject/",urlencodedParser,function(req,res){
+  monhoc.find({tenmonhoc:req.body.tenmonhoc}, function(err,data) {
+   if (!err) {
+    monhoc.remove({tenmonhoc:req.body.tenmonhoc},function(err){
+      if (!err)
+          res.send({status:"OK"});
+        else
+          res.send({status:"ERROR"})
+    })
+   }
+    else {
+      res.send({status:"ERROR"});
+    }
+    });
+})
 app.get("/removeAllMonHoc",function(req,res){
 	monhoc.remove({}, function(err) {
      if (!err) {
@@ -229,6 +243,19 @@ app.get("/saveMonHoc/",function(req,res){
       timestart: req.query.timestart,
       timeend:req.query.timeend,
       thu:req.query.thu
+  });
+  monHoc2.save(function(err) {
+      if (err) res.send({status:"ERROR"});
+      console.log("Da them vao database");
+      res.send({status:"OK"});
+  });
+});
+app.post("/addMonHoc",urlencodedParser,function(req,res){
+	var monHoc2 = monhoc({
+      tenmonhoc: req.body.tenmonhoc,
+      timestart: req.body.timestart,
+      timeend:req.body.timeend,
+      thu:req.body.thu
   });
   monHoc2.save(function(err) {
       if (err) res.send({status:"ERROR"});
@@ -283,6 +310,31 @@ app.get("/removeAccount",function(req,res){
     });
 });
 ///-----------------------------------------------SAVE Danh SACH SV API
+app.post("/saveSV/",urlencodedParser,function(req,res){
+  var currDate = new Date();
+  var danhSachs = danhSach({
+      id: req.body.id,
+      hoten: req.body.hoten,
+      mssv: req.body.mssv
+  });
+  // //them thiet bi vao
+  danhSachs.save(function(err) {
+      if (err) res.send({status:"ERROR"});
+
+      console.log("Da them vao database");
+      res.send({status:"OK"});
+  });
+})
+app.post("/deleteSV/",urlencodedParser,function(req,res){
+  danhSach.remove({id:req.body.id}, function(err) {
+     if (!err) {
+        res.send({status:"OK"});
+     }
+        else {
+         res.send({status:"ERROR"});
+        }
+    });
+})
 
 app.get("/save1/", function(req, res) {
 //http://localhost:9999/save1/?id=1&hoten=thong&mssv=1313179

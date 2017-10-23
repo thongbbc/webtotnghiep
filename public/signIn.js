@@ -20,7 +20,7 @@ class Main extends React.Component {
         <div class="card card-login mx-auto mt-5">
           <div class="card-header">Login</div>
           <div class="card-body">
-            <form ref = 'form' action='http://localhost:9999/trangchu' method='post'>
+            <form ref = 'form' action='/trangchu' method='post'>
               <div class="form-group">
                 <label for="exampleInputEmail1">Email address</label>
                 <input ref = 'user' name='username' class="form-control" id="exampleInputEmail1" type="email" aria-describedby="emailHelp" placeholder="Enter email"/>
