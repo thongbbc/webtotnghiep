@@ -469,9 +469,66 @@ class RowData extends React.Component {
 		}
 		return dulieu
 	}
+	_onPressAcceptRegisterSubject() {
+		const self= this
+		const {dataSourceRegisterSubject,dataSourceListSubject,selectedSubject,arrayMonHoc} = this.state
+			axios({
+			method:'get',
+			url:'/removeDangKyMonHoc/?monHoc='+selectedSubject,
+			responseType:'jsonp'
+		})
+			.then(function(response) {
+				if (response.status == 200) {
+					var data = response.data
+					if (data.status == 'OK') {
+						self.setState({
+							animating:false
+						})
+						var json = []
+						dataSourceRegisterSubject.map((value) => {
+							if (value.check == true) {
+								var monHoc = arrayMonHoc.find((value2) => value2.tenMonHoc == selectedSubject)
+								const json2 ={id:value.id,
+														 hoten:value.hoten,
+														 mssv:value.mssv,
+														 tenMonHoc:selectedSubject,
+														 timeStart:monHoc.timeStart,
+														 timeEnd:monHoc.timeEnd,
+														 thu:monHoc.thu}
+								json.push(json2)
+							}
+						})
+						var params = new URLSearchParams();
+						var stringJson = JSON.stringify(json)
+						params.append('json', stringJson);
+						axios.post('/saveJsonDangKyMonSV/',params)
+						  .then(response => {
+								if (response.status == 200) {
+									json = response.data
+									if (json.status == 'OK') {
+										alert('UPDATE SUCCESS')
+									} else {
+										alert('UPDATE FAILED')
+									}
+								} else {
+									alert("UPDATE FAILED")
+								}
+						  })
+						  .catch(error => {
+						    console.log(error);
+								alert("UPDATE FAILED")
+						  });
+					} else {
+						 alert('UPDATE FAILED')
+					}
+				} else {
+					alert('UPDATE FAILED')
+				}
+		});
+	}
 	handleChangeSelectedMonHoc(event) {
 		const self=this
-		self.setState({selectedSubject:event.target.value})
+		self.setState({selectedSubject:event.target.value,animating:true})
 		axios({
 		method:'get',
 		url:'/allData1',
@@ -501,13 +558,12 @@ class RowData extends React.Component {
 								}
 							})
 						})
-						alert(JSON.stringify(data1))
 						self.setState({
 							dataSourceRegisterSubject:data1,
 							animating:false
 						})
 					} else {
-
+						alert("CANNOT GET DATA")
 					}
 				});
 			}
@@ -515,10 +571,11 @@ class RowData extends React.Component {
 	}
 	_renderRegisterSubjectSV() {
 		return(
-			<div>
-				<select style={{height:50,width:200}} onChange={this.handleChangeSelectedMonHoc.bind(this)}>
+			<div style={{height:'100%'}}>
+				<select style={{height:'30%',float:'left',display:'inline-block',width:200}} onChange={this.handleChangeSelectedMonHoc.bind(this)}>
 					{this._renderAllMonHoc()}
 				</select>
+				<button onClick = {this._onPressAcceptRegisterSubject.bind(this)} style={{height:50,float:'left',width:'30%'}}>UPDATE</button>
 				<table style={{width:"100%"}}>
 					<thead>
 						<tr style={{color:'white',backgroundColor:'#157F90',height:50}}>

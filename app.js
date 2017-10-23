@@ -154,11 +154,32 @@ app.get("/dangKyMonHoc",function(req,res){
   })
 });
 //  /saveJsonDangKyMon/?=[{"id":"2","hoten":"nguyenanhthong","mssv":"1313179","tenMonhoc":"hoa","timeStart":"321312","timeEnd":"312312","thu":"Mon"}]
+app.post("/saveJsonDangKyMonSV/",urlencodedParser,function(req,res){
+  var jsonObject = JSON.parse(req.body.json)
+	jsonObject.map((value,index) => {
+		var dangKyMon2 = dangKyMon({
+	    id:value.id,
+			hoten:value.hoten,
+			mssv:value.mssv,
+			tenmonhoc:value.tenMonHoc,
+			timestart:value.timeStart,
+			timeend:value.timeEnd,
+			thu:value.thu,
+			nghihoc:false
+		});
+		dangKyMon2.save(function(err) {
+		    if (err) {res.send({status:"ERROR"})};
+		    console.log("Da them vao database");
+		});
+	})
+	res.send({status:"OK"});
+})
+
 app.get("/saveJsonDangKyMon/",function(req,res){
 	var jsonObject = JSON.parse(req.query.json)
 	jsonObject.map((value,index) => {
 		var dangKyMon2 = dangKyMon({
-	    	id:value.id,
+	    id:value.id,
 			hoten:value.hoten,
 			mssv:value.mssv,
 			tenmonhoc:value.tenMonHoc,
