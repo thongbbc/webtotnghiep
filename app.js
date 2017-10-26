@@ -153,6 +153,10 @@ app.get("/dangKyMonHoc",function(req,res){
       res.json(k);
   })
 });
+app.post("/testWiSock/",urlencodedParser,function(req,res){
+  res.send(req.body)
+}
+
 //  /saveJsonDangKyMon/?=[{"id":"2","hoten":"nguyenanhthong","mssv":"1313179","tenMonhoc":"hoa","timeStart":"321312","timeEnd":"312312","thu":"Mon"}]
 app.post("/saveJsonDangKyMonSV/",urlencodedParser,function(req,res){
   var jsonObject = JSON.parse(req.body.json)
@@ -349,7 +353,14 @@ app.post("/saveSV/",urlencodedParser,function(req,res){
 app.post("/deleteSV/",urlencodedParser,function(req,res){
   danhSach.remove({id:req.body.id}, function(err) {
      if (!err) {
-        res.send({status:"OK"});
+       dangKyMon.remove({id:req.body.id}, function(err) {
+          if (!err) {
+             res.send({status:"OK"});
+          }
+             else {
+              res.send({status:"ERROR"});
+             }
+         });
      }
         else {
          res.send({status:"ERROR"});
@@ -422,9 +433,55 @@ app.get("/allData1",function(req,res){
     {
       k.push({"id":data[i].id,"hoten":data[i].hoten,"mssv":data[i].mssv});
     }
+    bubbeSort(k,true)
       res.json(k);
   })
 });
+app.get("/allData11",function(req,res){
+  danhSach.find({}, function(err, data) {
+    var k=[];
+    for (var i=0;i<data.length;i++)
+    {
+      k.push({"id":data[i].id,"hoten":data[i].hoten,"mssv":data[i].mssv});
+    }
+    bubbeSort(k,false)
+      res.json(k);
+  })
+});
+function bubbeSort(array,flag) {
+    var temp,i,j;
+    var swapped = false
+    if (flag) {
+      for (i=0;i<array.length-1;i++) {
+        for (j=0;j<array.length-1-i;j++) {
+          if (parseInt(array[j].id)>parseInt(array[j+1].id)) {
+            temp = array[j]
+            array[j]=array[j+1]
+            array[j+1] = temp
+            swapped = true
+          }
+        }
+        if (!swapped) {
+          break
+        }
+      }
+    } else {
+      for (i=0;i<array.length-1;i++) {
+        for (j=0;j<array.length-1-i;j++) {
+          if (parseInt(array[j].id)<parseInt(array[j+1].id)) {
+            temp = array[j]
+            array[j]=array[j+1]
+            array[j+1] = temp
+            swapped = true
+          }
+        }
+        if (!swapped) {
+          break
+        }
+      }
+    }
+}
+
 app.get("/allData2",function(req,res){
   danhSach2.find({}, function(err, data) {
     var k=[];
