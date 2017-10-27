@@ -153,9 +153,7 @@ app.get("/dangKyMonHoc",function(req,res){
       res.json(k);
   })
 });
-app.post("/testWiSock/",urlencodedParser,function(req,res){
-  res.send(JSON.stringify(req.body.data))
-}
+
 
 //  /saveJsonDangKyMon/?=[{"id":"2","hoten":"nguyenanhthong","mssv":"1313179","tenMonhoc":"hoa","timeStart":"321312","timeEnd":"312312","thu":"Mon"}]
 app.post("/saveJsonDangKyMonSV/",urlencodedParser,function(req,res){
