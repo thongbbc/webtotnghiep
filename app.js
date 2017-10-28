@@ -361,7 +361,9 @@ app.get("/saveMonHoc/",function(req,res){
       tenmonhoc: req.query.tenmonhoc,
       timestart: req.query.timestart,
       timeend:req.query.timeend,
-      thu:req.query.thu
+      thu:req.query.thu,
+      datestart:req.query.datestart,
+      dateend:req.query.dateend
   });
   monHoc2.save(function(err) {
       if (err) res.send({status:"ERROR"});
