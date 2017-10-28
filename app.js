@@ -51,6 +51,10 @@ app.set("view engine", "ejs");
 app.set("views","./views");
 app.use(express.static("public"));
 
+
+
+
+
 app.post("/trangchu",urlencodedParser,function(req,res){
   console.log(req.body.username)
   account.find({username:req.body.username}, function(err, data) {
@@ -71,6 +75,84 @@ app.post("/trangchu",urlencodedParser,function(req,res){
     }
   })
 })
+app.post("/listDiemDanh",urlencodedParser,function(req,res){
+  var monHoc = req.body.monHoc
+  dangKyMon.find({tenmonhoc:monHoc}, function(err, data) {
+    if (err) res.send({status:"ERROR"});
+    var k1=[];
+    for (var i=0;i<data.length;i++)
+    {
+      k1.push({"id":data[i].id,"hoten":data[i].hoten,"mssv":data[i].mssv,"tenMonHoc":data[i].tenmonhoc,"timeStart":data[i].timestart,"timeEnd":data[i].timeend,"thu":data[i].thu,"nghihoc":data[i].nghihoc});
+    }
+      danhSach2.find({}, function(err, data) {
+        var k2=[];
+        for (var i=0;i<data.length;i++)
+        {
+          var timeStamp = data[i].time
+          var ngay = getDay(timeStamp) +"/"+getMonth(timeStamp)+"/"+getYear(timeStamp)
+          var time = getHours(timeStamp)+":"+getMinutes(timeStamp)+":"+getSeconds(timeStamp)
+          k2.push({"id":data[i].id,"time":timeStamp,"date":ngay,"typeTrip":data[i].typeTrip});
+        }
+        var k3 = []
+        k2.map((value)=>{
+          k1.map((value2) => {
+            if (value.id == value2.id) {
+              var arrayTime = value2.timeStart.split(':');
+              var totalMinutesStartSubject = parseInt(arrayTime[0])*60 + parseInt(arrayTime[0])
+              var totalMinutesCheck = parseInt(getHours(value.time)) * 60 + parseInt(getMinutes(value.time))
+              var ngay = getDay(value.time) +"/"+getMonth(value.time)+"/"+getYear(value.time)
+              var gio = getHours(timeStamp)+":"+getMinutes(timeStamp)+":"+getSeconds(timeStamp)
+
+              if ((getDayOfWeek(value.time) == value2.thu )
+               && ((totalMinutesCheck>= totalMinutesStartSubject-30) && (totalMinutesCheck<=totalMinutesStartSubject+30)))
+              {
+                k3.push({id:value.id,dayOfWeek:getDayOfWeek(value.time)+''
+                ,ngay:ngay,time:gio,monHoc:value2.tenMonHoc,check:true})
+              }
+            }
+          })
+        })
+        res.json(k3)
+      })
+  })
+})
+
+
+app.get('/check',function(req,res) {
+  var ngayStart =req.query.start
+  var ngayEnd = req.query.end
+  res.send(getCountOf(ngayStart,ngayEnd,'Mon').toString()+'')
+})
+function parseDate(input) {
+  var parts = input.split('/');
+  // new Date(year, month [, day [, hours[, minutes[, seconds[, ms]]]]])
+  return new Date(parts[2], parts[1]-1, parts[0]); // Note: months are 0-based
+}
+
+function getCountOf( date1, date2, dayToSearch )
+{
+
+	var dateObj1 = parseDate(date1);
+	var dateObj2 = parseDate(date2);
+
+	var array = [];
+
+	var week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+	var dayIndex = week.indexOf( dayToSearch );
+
+	while ( dateObj1.getTime() <= dateObj2.getTime() )
+	{
+	   if (dateObj1.getDay() == dayIndex )
+	   {
+		  array.push(dateObj1.getDate()+'/'+(dateObj1.getMonth()+1)+'/'+dateObj1.getFullYear())
+	   }
+
+	   dateObj1.setDate(dateObj1.getDate() + 1);
+	}
+
+	return array;
+}
 app.get('/signIn',function(req,res) {
   res.render('signIn',{check:0})
 })
@@ -81,7 +163,15 @@ app.get('/', function(req, res) {
 
 
 function getTimeStamp() {
-	return new Date().getTime() / 1000;
+	var d = new Date();
+  var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+  return new Date(utc + (3600000*7)) / 1000;
+}
+function getDayOfWeek(timeStamp) {
+  var date = new Date(timeStamp*1000)
+  var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var dayOfWeek = days[date.getDay()]
+  return dayOfWeek
 }
 function getDay(timeStamp) {
 	var date = new Date(timeStamp*1000)
