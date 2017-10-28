@@ -27,7 +27,9 @@ var monHocSchema = new Schema({
     tenmonhoc:String,
     timestart: String,
     timeend:String,
-    thu:String
+    thu:String,
+    datestart:String,
+    dateend:String
 });
 var dangKyMonHoc = new Schema({
 	id:String,
@@ -238,7 +240,9 @@ app.get("/dangKyMonHoc",function(req,res){
     var k=[];
     for (var i=0;i<data.length;i++)
     {
-      k.push({"id":data[i].id,"hoten":data[i].hoten,"mssv":data[i].mssv,"tenMonHoc":data[i].tenmonhoc,"timeStart":data[i].timestart,"timeEnd":data[i].timeend,"thu":data[i].thu,"nghihoc":data[i].nghihoc});
+      k.push({"id":data[i].id,"hoten":data[i].hoten,"mssv":data[i].mssv,
+      "tenMonHoc":data[i].tenmonhoc,"timeStart":data[i].timestart,
+      "timeEnd":data[i].timeend,"thu":data[i].thu,"nghihoc":data[i].nghihoc});
     }
       res.json(k);
   })
@@ -344,7 +348,9 @@ app.get("/monHoc",function(req,res){
     var k=[];
     for (var i=0;i<data.length;i++)
     {
-      k.push({"tenMonHoc":data[i].tenmonhoc,"timeStart":data[i].timestart,"timeEnd":data[i].timeend,"thu":data[i].thu});
+      k.push({"tenMonHoc":data[i].tenmonhoc,"timeStart":data[i].timestart,
+      "timeEnd":data[i].timeend,"thu":data[i].thu,
+      "dateStart":data[i].datestart,"dateEnd":data[i].dateend});
     }
       res.json(k);
   })
@@ -368,7 +374,9 @@ app.post("/addMonHoc",urlencodedParser,function(req,res){
       tenmonhoc: req.body.tenmonhoc,
       timestart: req.body.timestart,
       timeend:req.body.timeend,
-      thu:req.body.thu
+      thu:req.body.thu,
+      datestart:req.body.datestart,
+      dateend:req.body.dateend
   });
   monHoc2.save(function(err) {
       if (err) res.send({status:"ERROR"});

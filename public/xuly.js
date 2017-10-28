@@ -123,12 +123,29 @@ class RowData extends React.Component {
 		const hourend = this.refs.hourend.value
 		const minutesend = this.refs.minutesend.value
 		const thu = this.refs.thu.value
-		if (namesubject!='' && hourstart!= '' && minutesstart!='' && hourend!='' && minutesend!='' && thu!='') {
+
+		const dayStart = this.refs.daystart.value
+		const monthStart = this.refs.monthstart.value
+		const yearStart = this.refs.yearstart.value
+
+		const dayEnd = this.refs.dayend.value
+		const monthEnd = this.refs.monthend.value
+		const yearEnd = this.refs.yearend.value
+		if (namesubject!='' && hourstart!= '' && minutesstart!=''
+		&& hourend!='' && minutesend!='' && thu!=''
+		&& dayStart!='' && monthStart!=''&&yearStart!=''
+		&& dayEnd!='' && monthEnd!=''&&yearEnd!='') {
 			var params = new URLSearchParams();
 			params.append('tenmonhoc', namesubject);
 			params.append('timestart', hourstart+':'+minutesstart);
 			params.append('timeend', hourend+':'+minutesend);
 			params.append('thu',thu)
+			var start = dayStart+'/'+monthStart+'/'+yearStart
+			var end = dayEnd+'/'+monthEnd+'/'+yearEnd
+
+			params.append('datestart',start)
+			params.append('dateend',end)
+
 			axios.post('/addMonHoc',params)
 			  .then(response => {
 					if (response.data.status == 'OK') {
@@ -298,11 +315,15 @@ class RowData extends React.Component {
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.timeStart}</div></td>
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.timeEnd}</div></td>
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.thu}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.dateStart}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.dateEnd}</div></td>
+
 						<td >
 							<div style={{flex:1,width:'100%',height:'100%',alignItems:'center',textAlign:'center'}}>
 								<button onClick={this._onPressDELETESubject.bind(this,value,index)} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>DELETE</button>
 							</div>
 						</td>
+
 					</tr>
 				)
 			} else {
@@ -312,6 +333,9 @@ class RowData extends React.Component {
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.timeStart}</div></td>
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.timeEnd}</div></td>
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.thu}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.dateStart}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.dateEnd}</div></td>
+
 						<td >
 							<div style={{height:'100%',width:'100%',alignItems:'center',textAlign:'center'}}>
 								<button onClick={this._onPressDELETESubject.bind(this,value,index)} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>DELETE</button>
@@ -333,7 +357,10 @@ class RowData extends React.Component {
 							<th>TIMESTART</th>
 							<th>TIMEEND</th>
 							<th>DAYOFWEEK</th>
+							<th>DATESTART</th>
+							<th>DATEEND</th>
 							<th></th>
+
 						</tr>
 					</thead>
 					<tbody>
@@ -374,6 +401,39 @@ class RowData extends React.Component {
 		}
 		return dulieu
 	}
+	_renderDate() {
+		var dulieu = []
+		for (var i =1 ;i<=31;i++) {
+			if (i <=9) {
+				dulieu.push(<option key={i}  value={'0'+i}>{'0'+i}</option>)
+			} else {
+				dulieu.push(<option key={i}  value={i+''}>{i+''}</option>)
+			}
+		}
+		return dulieu
+	}
+	_renderMonth() {
+		var dulieu = []
+		for (var i =1 ;i<=12;i++) {
+			if (i <=9) {
+				dulieu.push(<option key={i}  value={'0'+i}>{'0'+i}</option>)
+			} else {
+				dulieu.push(<option key={i}  value={i+''}>{i+''}</option>)
+			}
+		}
+		return dulieu
+	}
+	_renderYear() {
+		var dulieu = []
+		for (var i =(new Date()).getFullYear() ;i<=(new Date()).getFullYear()+20;i++) {
+			if (i <=9) {
+				dulieu.push(<option key={i}  value={'0'+i}>{'0'+i}</option>)
+			} else {
+				dulieu.push(<option key={i}  value={i+''}>{i+''}</option>)
+			}
+		}
+		return dulieu
+	}
 	_renderAddSubject() {
 		return(
 			<div>
@@ -400,6 +460,29 @@ class RowData extends React.Component {
 											/MINUTES:	<select ref='minutesend'>{this._renderMinutes()}</select>
 										</td>
 									</tr>
+
+
+
+									<tr style={{color:'black',height:50}}>
+										<td style={{width:'50%'}}>DATESTART</td>
+										<td style={{width:'50%'}}>
+											DATE:	<select ref='daystart'>{this._renderDate()}</select>
+											/MONTH:	<select ref='monthstart'>{this._renderMonth()}</select>
+											/YEAR:	<select ref='yearstart'>{this._renderYear()}</select>
+										</td>
+									</tr>
+									<tr style={{color:'black',height:50}}>
+										<td style={{width:'50%'}}>DATEEND</td>
+										<td style={{width:'50%'}}>
+										DATE:	<select ref='dayend'>{this._renderDate()}</select>
+										/MONTH:	<select ref='monthend'>{this._renderMonth()}</select>
+										/YEAR:	<select ref='yearend'>{this._renderYear()}</select>
+										</td>
+									</tr>
+
+
+
+
 									<tr style={{color:'black',height:50}}>
 										<td style={{width:'50%'}}>DAYOFWEEK</td>
 										<td style={{width:'50%'}}>
@@ -689,10 +772,12 @@ class RowData extends React.Component {
 										value.check == false
 										data.map((value2) => {
 											if (value.id == value2.id && selectedSubject == value2.tenMonHoc) {
-												value.tenMonHoc = selectedSubject,
-												value.timeStart = value2.timeStart,
-												value.timeEnd = value2.timeEnd,
-												value.thu = value2.thu,
+												value.tenMonHoc = selectedSubject
+												value.timeStart = value2.timeStart
+												value.timeEnd = value2.timeEnd
+												value.dateStart = value2.dateStart
+												value.dateEnd = value2.dateEnd
+												value.thu = value2.thu
 												value.check = true
 											}
 										})
