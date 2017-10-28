@@ -40,11 +40,20 @@ var dangKyMonHoc = new Schema({
 	thu:String,
 	nghihoc:Boolean
 })
+var listDiemDanh = new Schema({
+	id:String,
+	hoten:String,
+	tenmonhoc:String,
+	time:String,
+	date:String,
+	thu:String
+})
 var account = mongoose.model("Account",accountSchema);
 var danhSach = mongoose.model("DanhSach", vanTaySchema);
 var danhSach2 = mongoose.model("DanhSach2", vanTaySchema2);
 var monhoc = mongoose.model("MonHoc",monHocSchema);
 var dangKyMon = mongoose.model("DangKyMonHoc",dangKyMonHoc);
+var diemDanh = mongoose.model("listDiemDanh",listDiemDanh);
 
 mongoose.connect("mongodb://root:123@ds147044.mlab.com:47044/vantay");
 
@@ -77,45 +86,101 @@ app.post("/trangchu",urlencodedParser,function(req,res){
     }
   })
 })
+//  /fakeDataDiemDanh?id=1&hoten=Thong&tenmonhoc=Hoa&time=12:20&date=14/9/1995&thu=Mon
+app.get('/fakeDataDiemDanh',function(req,res) {
+	var diemDanh1 = diemDanh({
+	    	id:req.query.id,
+			hoten:req.query.hoten,
+			tenmonhoc:req.query.tenmonhoc,
+			time:req.query.time,
+			date:req.query.date,
+			thu:req.query.thu
+		});
+		diemDanh1.save(function(err) {
+		    if (err) {res.send({status:"ERROR"})};
+		    res.send({status:'OK'})
+		    console.log("Da them vao database");
+		});
+})
+app.get('/dataDiemDanh',function(req,res) {
+	  diemDanh.find({}, function(err, data) {
+	  	res.json(data)	
+	  })
+})
+app.get('/xoaDiemDanh',function(req,res) {
+		 	diemDanh.remove({},function(err){
+		 		if (!err) {
+		 			res.send({status:'OK'})
+		 		} else {
+		 			res.send({status:'ERROR'})
+		 		}
+		 	})
+
+})
+
 app.post("/listDiemDanh",urlencodedParser,function(req,res){
   var monHoc = req.body.monHoc
+  var k0 = []
   dangKyMon.find({tenmonhoc:monHoc}, function(err, data) {
-    if (err) res.send({status:"ERROR"});
-    var k1=[];
-    for (var i=0;i<data.length;i++)
-    {
-      k1.push({"id":data[i].id,"hoten":data[i].hoten,"mssv":data[i].mssv,"tenMonHoc":data[i].tenmonhoc,"timeStart":data[i].timestart,"timeEnd":data[i].timeend,"thu":data[i].thu,"nghihoc":data[i].nghihoc});
-    }
-      danhSach2.find({}, function(err, data) {
-        var k2=[];
-        for (var i=0;i<data.length;i++)
-        {
-          var timeStamp = data[i].time
-          var ngay = getDay(timeStamp) +"/"+getMonth(timeStamp)+"/"+getYear(timeStamp)
-          var time = getHours(timeStamp)+":"+getMinutes(timeStamp)+":"+getSeconds(timeStamp)
-          k2.push({"id":data[i].id,"time":timeStamp,"date":ngay,"typeTrip":data[i].typeTrip});
-        }
-        var k3 = []
-        k2.map((value)=>{
-          k1.map((value2) => {
-            if (value.id == value2.id) {
-              var arrayTime = value2.timeStart.split(':');
-              var totalMinutesStartSubject = parseInt(arrayTime[0])*60 + parseInt(arrayTime[0])
-              var totalMinutesCheck = parseInt(getHours(value.time)) * 60 + parseInt(getMinutes(value.time))
-              var ngay = getDay(value.time) +"/"+getMonth(value.time)+"/"+getYear(value.time)
-              var gio = getHours(timeStamp)+":"+getMinutes(timeStamp)+":"+getSeconds(timeStamp)
+    if (!err) {
+	    var k=[];
+	    for (var i=0;i<data.length;i++)
+	    {
+	      k0.push({"id":data[i].id,"hoten":data[i].hoten,"tenmmonhoc":data[i].tenmonhoc});
+	    }
+	    bubbeSort(k0,true)
+	    monhoc.find({tenmonhoc:monHoc}, function(err,data) {
+			 if (!err) {
+			 	if (data.length!=0) {
+			 		var k1= []
+				 	data.map((value)=>{
+				 		k1.push({
+				 			tenmonhoc:value.tenmonhoc,
+						    timestart: value.timestart,
+						    timeend:value.timeend,
+						    thu:value.thu,
+						    datestart:value.datestart,
+						    dateend:value.dateend
+				 		})
+				 	})
+				 	diemDanh.find({tenmonhoc:monHoc}, function(err,data) {
+						if (!err) {
+							var jsonXuat = []
+							k0.map((value1)=> {
+								var count = 0
+								data.map((value2)=>{
+									if (value2.id == value1.id) {
+										count ++
+									}
+								})
+								var mangsongay=getCountOf(k1[0].datestart,k1[0].dateend,k1[0].thu)
+								console.log(count+" "+mangsongay.length+" "+k1[0].datestart+" "+k1[0].dateend)
 
-              if ((getDayOfWeek(value.time) == value2.thu )
-               && ((totalMinutesCheck>= totalMinutesStartSubject-30) && (totalMinutesCheck<=totalMinutesStartSubject+30)))
-              {
-                k3.push({id:value.id,dayOfWeek:getDayOfWeek(value.time)+''
-                ,ngay:ngay,time:gio,monHoc:value2.tenMonHoc,check:true})
-              }
-            }
-          })
-        })
-        res.json(k3)
-      })
+								jsonXuat.push({
+									percent: (parseFloat(((count *100)/mangsongay.length)).toPrecision(2))+'',
+									tenmonhoc:monHoc,
+									id:value1.id,
+									hoten:value1.hoten
+								})
+							})
+							res.json(jsonXuat)
+							
+						} else {
+							res.send({status:"ERROR"})
+						} 		
+			 		})
+			 	} else {
+			 		res.send({status:"ERROR"})
+			 	}
+			 	
+			 }
+		    else {
+		     	res.send({status:"ERROR"});
+		    }
+  		});
+	} else {
+		res.send({status:'ERROR'})
+	}
   })
 })
 
