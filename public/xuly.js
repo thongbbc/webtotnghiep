@@ -676,7 +676,115 @@ class RowData extends React.Component {
 			</div>
 		)
 	}
+	_onPressDeleteRegisterSubject(value,index) {
+		axios({
+			method:'get',
+			url:'/removeDangKyMonHoc/?monHoc='+value.tenMonHoc,
+			responseType:'jsonp'
+		}).then(function(responseMonHoc) {
+			if (responseMonHoc.status == 200) {
+				if (responseMonHoc.data.status == 'OK') {
+					alert("REMOVE REGISTER SUBJECT SUCCESS")
+				} else {
+					alert("REMOVE REGISTER SUBJECT FAILED!")
+				}
+			} else {
+				alert("REMOVE REGISTER SUBJECT FAILED!")
+			}
+		})
+	}
+	_renderRowListDeleteRegisterSubject() {
+		const {dataSourceListSubject} = this.state
+		var dulieu = []
+		dataSourceListSubject.map((value,index) => {
+			if (index%2 == 0) {
+				dulieu.push(
+					<tr key={index} style={{backgroundColor:'#EAF3F3',height:50}}>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.tenMonHoc}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.timeStart}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.timeEnd}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.thu}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.dateStart}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.dateEnd}</div></td>
 
+						<td >
+							<div style={{flex:1,width:'100%',height:'100%',alignItems:'center',textAlign:'center'}}>
+								<button onClick={this._onPressDeleteRegisterSubject.bind(this,value,index)} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>DELETE</button>
+							</div>
+						</td>
+
+					</tr>
+				)
+			} else {
+				dulieu.push(
+					<tr key={index} style={{backgroundColor:'white',height:50}}>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.tenMonHoc}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.timeStart}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.timeEnd}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.thu}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.dateStart}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.dateEnd}</div></td>
+
+						<td >
+							<div style={{height:'100%',width:'100%',alignItems:'center',textAlign:'center'}}>
+								<button onClick={this._onPressDeleteRegisterSubject.bind(this,value,index)} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>DELETE</button>
+							</div>
+						</td>
+					</tr>
+				)
+			}
+		})
+		return dulieu
+	}
+	_renderRemoveRegisterSubject() {
+		return(
+			<div>
+				<table style={{height:'100%',width:"100%"}}>
+					<thead>
+						<tr style={{color:'white',backgroundColor:'#157F90',height:50}}>
+							<th>NAMESUBJECT</th>
+							<th>TIMESTART</th>
+							<th>TIMEEND</th>
+							<th>DAYOFWEEK</th>
+							<th>DATESTART</th>
+							<th>DATEEND</th>
+							<th></th>
+
+						</tr>
+					</thead>
+					<tbody>
+						{this._renderRowListDeleteRegisterSubject()}
+					</tbody>
+				</table>
+				{this._renderLoading()}
+			</div>
+		)
+	}
+	_onAcceptPressClearListTrip() {
+		axios({
+			method:'get',
+			url:'/removeLichSu',
+			responseType:'jsonp'
+		}).then(function(responseMonHoc) {
+			if (responseMonHoc.status == 200) {
+				if (responseMonHoc.data.status == 'OK') {
+					alert("REMOVE CACHE LIST TRIP SUCCESS!")
+				} else {
+					alert("REMOVE CACHE LIST TRIP FAILED!")
+				}
+			} else {
+				alert("REMOVE CACHE LIST TRIP FAILED!")
+			}
+		})
+	}
+	_renderClearListTrip() {
+		return (
+			<div style={{padding:10,left:20}}>
+				Do You Want To Clear ALL Cache List Trip?
+				<button style={{left:20,height:30,width:200}} onClick={this._onAcceptPressClearListTrip.bind(this)}>CLEAR LISTTRIP</button>
+			</div>
+		)
+	}
 	_renderScreen() {
 		const {kindScreen} = this.state
 		if (kindScreen == 0) {
@@ -691,6 +799,10 @@ class RowData extends React.Component {
 			return this._renderAddSubject()
 		} else if (kindScreen == 5 ) {
 			return this._renderRegisterSubjectSV()
+		} else if (kindScreen == 6 ) {
+			return this._renderRemoveRegisterSubject()
+		} else if(kindScreen == 7) {
+			return this._renderClearListTrip()
 		}
 	}
 	_loadDataDanhSachRaVao() {
@@ -799,6 +911,33 @@ class RowData extends React.Component {
 		})
 
 	}
+	_loadRemoveRegisterSubject() {
+		const self = this
+     	axios({
+		  method:'get',
+		  url:'/monHoc',
+		  responseType:'jsonp'
+		})
+		  .then(function(response) {
+		  	if (response.status == 200) {
+		  		var data = response.data
+		  		self.setState({
+		  			dataSourceListSubject:data,
+		  			animating:false
+		  		})
+		  	} else {
+
+		  	}
+		});
+	}
+
+	_onPressClearListTrip() {
+		this.setState({kindScreen:7})
+	}
+	_onPressRemoveSubject() {
+		this.setState({kindScreen:6,animating:true})
+		this._loadRemoveRegisterSubject()
+	}
 	_onPressRegisterSubjectSV() {
 		this.setState({kindScreen:5})
 		this._loadRegisterSubject()
@@ -833,7 +972,9 @@ class RowData extends React.Component {
 					<p onClick={this._onPressListSubject.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>LISTSUBJECT</p>
 					<p onClick={this._onPressAddSubject.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>ADDSUBJECT</p>
 					<p onClick={this._onPressRegisterSubjectSV.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>REGISTERSUBJECT</p>
-					<p onClick={this._onPressAddSubject.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>NULL</p>
+					<p onClick={this._onPressRemoveSubject.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>REMOVE REGISTER SUBJECT</p>
+					<hr/>
+					<p onClick={this._onPressClearListTrip.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>CLEAR CACHE LISTTRIP</p>
 					<p onClick={this._onPressAddSubject.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>NULL</p>
 
 				</div>

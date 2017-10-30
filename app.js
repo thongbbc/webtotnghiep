@@ -104,7 +104,7 @@ app.get('/fakeDataDiemDanh',function(req,res) {
 })
 app.get('/dataDiemDanh',function(req,res) {
 	  diemDanh.find({}, function(err, data) {
-	  	res.json(data)	
+	  	res.json(data)
 	  })
 })
 app.get('/xoaDiemDanh',function(req,res) {
@@ -123,7 +123,6 @@ app.post("/listDiemDanh",urlencodedParser,function(req,res){
   var k0 = []
   dangKyMon.find({tenmonhoc:monHoc}, function(err, data) {
     if (!err) {
-	    var k=[];
 	    for (var i=0;i<data.length;i++)
 	    {
 	      k0.push({"id":data[i].id,"hoten":data[i].hoten,"tenmmonhoc":data[i].tenmonhoc});
@@ -164,15 +163,15 @@ app.post("/listDiemDanh",urlencodedParser,function(req,res){
 								})
 							})
 							res.json(jsonXuat)
-							
+
 						} else {
 							res.send({status:"ERROR"})
-						} 		
+						}
 			 		})
 			 	} else {
 			 		res.send({status:"ERROR"})
 			 	}
-			 	
+
 			 }
 		    else {
 		     	res.send({status:"ERROR"});
@@ -299,6 +298,8 @@ app.get("/removeAllDangKyMon",function(req,res){
         }
     });
 });
+
+
 app.get("/dangKyMonHoc",function(req,res){
 	dangKyMon.find({}, function(err, data) {
     if (err) res.send({status:"ERROR"});
@@ -384,7 +385,21 @@ app.post("/deleteSubject/",urlencodedParser,function(req,res){
    if (!err) {
     monhoc.remove({tenmonhoc:req.body.tenmonhoc},function(err){
       if (!err)
-          res.send({status:"OK"});
+      diemDanh.remove({tenmonhoc:req.body.tenmonhoc},function(err){
+        if (!err) {
+          dangKyMon.remove({tenmonhoc:req.body.tenmonhoc}, function(err) {
+             if (!err) {
+                res.send({status:"OK"});
+             }
+                else {
+                 res.send({status:"ERROR"});
+                }
+            });
+        } else {
+          res.send({status:'ERROR'})
+        }
+      })
+
         else
           res.send({status:"ERROR"})
     })
