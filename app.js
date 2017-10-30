@@ -195,8 +195,7 @@ function parseDate(input) {
   return new Date(parts[2], parts[1]-1, parts[0]); // Note: months are 0-based
 }
 
-function getCountOf( date1, date2, dayToSearch )
-{
+function getCountOf( date1, date2, dayToSearch ){
 
 	var dateObj1 = parseDate(date1);
 	var dateObj2 = parseDate(date2);
@@ -533,7 +532,20 @@ app.post("/deleteSV/",urlencodedParser,function(req,res){
      if (!err) {
        dangKyMon.remove({id:req.body.id}, function(err) {
           if (!err) {
-             res.send({status:"OK"});
+            danhSach2.remove({id:req.body.id}, function(err) {
+               if (!err) {
+                 diemDanh.remove({id:req.body.id}, function(err,data) {
+                   if (!err) {
+                     res.send({status:"OK"});
+                   } else {
+                     res.send({status:"ERROR"});
+                   }
+                 })
+                }
+                else {
+                    res.send({status:"ERROR"});
+                }
+            });
           }
              else {
               res.send({status:"ERROR"});
@@ -603,7 +615,16 @@ app.get("/removeLichSu",function(req,res){
         }
     });
 })
-
+app.get("/removeListTrip/",function(req,res){
+  danhSach2.remove({id:req.query.id}, function(err) {
+     if (!err) {
+        res.send({status:"OK"});
+     }
+        else {
+         res.send({status:"ERROR"});
+        }
+    });
+})
 app.get("/allData1",function(req,res){
   danhSach.find({}, function(err, data) {
     var k=[];

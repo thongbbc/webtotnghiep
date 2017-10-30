@@ -11,7 +11,9 @@ class RowData extends React.Component {
 			dataSourceListSubject:[],
 			dataSourceRegisterSubject:[],
 			selectedSubject:'',
-			arrayMonHoc: []
+			arrayMonHoc: [],
+			selectedCheckTrip :0,
+			listDetailCount:[]
 		}
 	}
 	componentDidMount() {
@@ -48,7 +50,8 @@ class RowData extends React.Component {
 	}
 
 	_onPressItem(data,index) {
-		alert('Click')
+		this.setState({kindScreen:8,selectedCheckTrip:data})
+		this._loadDetailCount(data.id)
 	}
 
 	_onPressOKAddSV() {
@@ -785,6 +788,73 @@ class RowData extends React.Component {
 			</div>
 		)
 	}
+	_renderRowDetailTrip() {
+		const {selectedCheckTrip,listDetailCount} = this.state
+		var dulieu = []
+		listDetailCount.map((value,index) => {
+			if (index%2 == 0) {
+				dulieu.push(
+					<tr key={index} style={{backgroundColor:'#EAF3F3',height:50}}>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{selectedCheckTrip.id}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{selectedCheckTrip.hoten}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{selectedCheckTrip.mssv}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.date}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.count}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.typeTrip==true?'Vào':'Ra'}</div></td>
+
+						<td >
+							<div style={{flex:1,width:'100%',height:'100%',alignItems:'center',textAlign:'center'}}>
+								<button onClick={this._onPressDeleteRegisterSubject.bind(this,value,index)} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>DELETE</button>
+							</div>
+						</td>
+
+					</tr>
+				)
+			} else {
+				dulieu.push(
+					<tr key={index} style={{backgroundColor:'white',height:50}}>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{selectedCheckTrip.id}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{selectedCheckTrip.hoten}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{selectedCheckTrip.mssv}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.date}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.count}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.typeTrip==true?'Vào':'Ra'}</div></td>
+
+						<td >
+							<div style={{height:'100%',width:'100%',alignItems:'center',textAlign:'center'}}>
+								<button onClick={this._onPressDeleteRegisterSubject.bind(this,value,index)} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>DELETE</button>
+							</div>
+						</td>
+					</tr>
+				)
+			}
+		})
+		return dulieu
+	}
+	_renderDetailTrip() {
+		return(
+			<div>
+				<table style={{height:'100%',width:"100%"}}>
+					<thead>
+						<tr style={{color:'white',backgroundColor:'#157F90',height:50}}>
+							<th>ID</th>
+							<th>NAME</th>
+							<th>MSSV</th>
+							<th>DATE</th>
+							<th>COUNT</th>
+							<th>STATUS</th>
+							<th></th>
+
+						</tr>
+					</thead>
+					<tbody>
+						{this._renderRowDetailTrip()}
+					</tbody>
+				</table>
+				{this._renderLoading()}
+			</div>
+		)
+	}
 	_renderScreen() {
 		const {kindScreen} = this.state
 		if (kindScreen == 0) {
@@ -803,6 +873,8 @@ class RowData extends React.Component {
 			return this._renderRemoveRegisterSubject()
 		} else if(kindScreen == 7) {
 			return this._renderClearListTrip()
+		} else if(kindScreen == 8) {
+			return this._renderDetailTrip()
 		}
 	}
 	_loadDataDanhSachRaVao() {
@@ -930,7 +1002,22 @@ class RowData extends React.Component {
 		  	}
 		});
 	}
-
+	_loadDetailCount(id) {
+		const self = this
+			axios({
+			method:'get',
+			url:'/countId?id='+id,
+			responseType:'jsonp'
+		}).then(function(response) {
+			if (response.status == 200) {
+				self.setState({
+					listDetailCount:response.data
+				})
+			} else {
+				alert('GET DETAIL TRIP OF THIS ID FAILED')
+			}
+		})
+	}
 	_onPressClearListTrip() {
 		this.setState({kindScreen:7})
 	}
@@ -968,13 +1055,14 @@ class RowData extends React.Component {
 					<p onClick={this._onPressAddSV.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>ADDSTUDENT</p>
 					<hr/>
 					<p onClick={this._onPressDanhSachRaVao.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>LISTTRIP</p>
+					<p onClick={this._onPressClearListTrip.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>CLEAR CACHE LISTTRIP</p>
+
 					<hr/>
 					<p onClick={this._onPressListSubject.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>LISTSUBJECT</p>
 					<p onClick={this._onPressAddSubject.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>ADDSUBJECT</p>
 					<p onClick={this._onPressRegisterSubjectSV.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>REGISTERSUBJECT</p>
 					<p onClick={this._onPressRemoveSubject.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>REMOVE REGISTER SUBJECT</p>
 					<hr/>
-					<p onClick={this._onPressClearListTrip.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>CLEAR CACHE LISTTRIP</p>
 					<p onClick={this._onPressAddSubject.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>NULL</p>
 
 				</div>
