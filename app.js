@@ -557,7 +557,22 @@ app.post("/deleteSV/",urlencodedParser,function(req,res){
         }
     });
 })
-
+app.post("/saveTRIP/",urlencodedParser,function(req,res){
+  var timeStamp = getTimeStamp()
+  
+      var danhSachs = danhSach2({
+          id: req.body.id,
+          time: timeStamp.toString(),//currDate.getHours()+":"+currDate.getMinutes()+":"+currDate.getSeconds()
+          typeTrip:req.body.typeTrip // true: vao  false: ra
+      });
+      // //them thiet bi vao
+      danhSachs.save(function(err) {
+          if (err)  res.send("{status:\"ERROR\"}");
+          console.log("Da them vao database");
+          res.send("{status:\"OK\"}");
+      });
+});
+  
 app.get("/save1/", function(req, res) {
 //http://localhost:9999/save1/?id=1&hoten=thong&mssv=1313179
     var currDate = new Date();

@@ -13,7 +13,8 @@ class RowData extends React.Component {
 			selectedSubject:'',
 			arrayMonHoc: [],
 			selectedCheckTrip :0,
-			listDetailCount:[]
+			listDetailCount:[],
+			listCheck:[]
 		}
 	}
 	componentDidMount() {
@@ -855,6 +856,75 @@ class RowData extends React.Component {
 			</div>
 		)
 	}
+	_renderRowCheckSV() {
+		const {listCheck} = this.state
+		var dulieu = []
+		listCheck.map((value,index) => {
+			if (index%2 == 0) {
+				dulieu.push(
+					<tr key={index} style={{backgroundColor:'#EAF3F3',height:50}}>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.id}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.hoten}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.percent+' %'}</div></td>
+
+						<td >
+							<div style={{flex:1,width:'100%',height:'100%',alignItems:'center',textAlign:'center'}}>
+								<button onClick={this._onPressDeleteRegisterSubject.bind(this,value,index)} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>DELETE</button>
+							</div>
+						</td>
+
+					</tr>
+				)
+			} else {
+				dulieu.push(
+					<tr key={index} style={{backgroundColor:'white',height:50}}>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.id}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.hoten}</div></td>
+						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.percent + ' %'}</div></td>
+
+						<td >
+							<div style={{height:'100%',width:'100%',alignItems:'center',textAlign:'center'}}>
+								<button onClick={this._onPressDeleteRegisterSubject.bind(this,value,index)} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>DELETE</button>
+							</div>
+						</td>
+					</tr>
+				)
+			}
+		})
+		return dulieu
+	}
+	_renderAllMonHoc2() {
+		const {dataSourceListSubject} = this.state
+		var dulieu = []
+		for (var i =0 ;i<dataSourceListSubject.length ;i++) {
+			dulieu.push(<option key={i}  value={dataSourceListSubject[i].tenMonHoc}>{dataSourceListSubject[i].tenMonHoc}</option>)
+		}
+		return dulieu
+	}
+	_renderCheckSV() {
+		return (
+			<div style={{height:'100%'}}>
+			<select style={{height:'30%',float:'left',display:'inline-block',width:200}} onChange={this._handleClickChooseSubjectCheck.bind(this)}>
+				{this._renderAllMonHoc2()}
+			</select>
+			<table style={{width:"100%"}}>
+					<thead>
+						<tr style={{color:'white',backgroundColor:'#157F90',height:50}}>
+							<th>ID</th>
+							<th>NAME</th>
+							<th>Percent</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						{this._renderRowCheckSV()}
+					</tbody>
+			</table>
+			{this._renderLoading()}
+			</div>
+
+		)
+	}
 	_renderScreen() {
 		const {kindScreen} = this.state
 		if (kindScreen == 0) {
@@ -875,6 +945,8 @@ class RowData extends React.Component {
 			return this._renderClearListTrip()
 		} else if(kindScreen == 8) {
 			return this._renderDetailTrip()
+		} else if (kindScreen == 10) {
+			return this._renderCheckSV()
 		}
 	}
 	_loadDataDanhSachRaVao() {
@@ -1018,6 +1090,68 @@ class RowData extends React.Component {
 			}
 		})
 	}
+	_handleClickChooseSubjectCheck(event) {
+		this.setState({animating:true})
+		const self = this
+		var params = new URLSearchParams();
+		params.append('monHoc', event.target.value);
+		axios.post('/listDiemDanh',params)
+		  .then(response => {
+				if (response.status == '200') {
+					self.setState({
+						listCheck:response.data,
+						animating:false								 
+					})
+				} else {
+					alert("CANNOT LOAD LIST CHECK")
+				}
+		  })
+		  .catch(error => {
+			console.log(error);
+			alert("CANNOT LOAD LIST CHECK")
+		});
+	}
+	_loadListCheck() {
+		const self = this
+		axios({
+		 method:'get',
+		 url:'/monHoc',
+		 responseType:'jsonp'
+	   })
+		 .then(function(response) {
+			 if (response.status == 200) {
+				 var data = response.data
+				 self.setState({
+					 dataSourceListSubject:data,
+				 })
+				 var params = new URLSearchParams();
+				 params.append('monHoc', data[0].tenMonHoc);
+				 axios.post('/listDiemDanh',params)
+				   .then(response => {
+						 if (response.status == '200') {
+							 self.setState({
+								 listCheck:response.data,
+								 animating:false								 
+							 })
+						 } else {
+							 alert("CANNOT LOAD LIST CHECK")
+						 }
+				   })
+				   .catch(error => {
+					 console.log(error);
+					 alert("CANNOT LOAD LIST CHECK")
+				 });
+
+			 } else {
+
+			 }
+	   });
+		
+	}
+	_onPressCheckSV() {
+		this._loadListCheck()		
+		this.setState({kindScreen: 10,animating:true})	
+	}
 	_onPressClearListTrip() {
 		this.setState({kindScreen:7})
 	}
@@ -1047,12 +1181,15 @@ class RowData extends React.Component {
 		this._loadDataDanhSachRaVao()
 		this.setState({kindScreen:2,animating:true})
 	}
+	
 	render() {
 		return(
 			<div style={{height:'95%',width:'100%'}}>
 				<div style={{float:'left',width:'20%',height:'100%',backgroundColor:'#157F90'}}>
 					<p onClick={this._onPressDashBoard.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>DASHBOARD</p>
 					<p onClick={this._onPressAddSV.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>ADDSTUDENT</p>
+					<p onClick={this._onPressCheckSV.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>CHECK</p>
+
 					<hr/>
 					<p onClick={this._onPressDanhSachRaVao.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>LISTTRIP</p>
 					<p onClick={this._onPressClearListTrip.bind(this)} style={{width:'100%',marginLeft:20,marginTop:20,marginBottom:20,color:'white',fontSize:20,fontWeight:'bold'}}>CLEAR CACHE LISTTRIP</p>
