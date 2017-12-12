@@ -319,7 +319,13 @@ app.get("/getMonDangKy",function(req,res){
       if (data.length!=0) {
         data.map((value,index) => {
           if (value.id == req.query.id) {
-            k.push(value.tenmonhoc)
+            const item = {
+              tenMonHoc:value.tenmonhoc,
+              timeStart:value.timestart,
+              timeEnd:value.timeend,
+              thu:value.thu
+            }
+            k.push(item)
           }
         })  
       }
