@@ -187,7 +187,8 @@ app.post("/listDiemDanh",urlencodedParser,function(req,res){
 app.get('/check',function(req,res) {
   var ngayStart =req.query.start
   var ngayEnd = req.query.end
-  res.send(getCountOf(ngayStart,ngayEnd,'Mon').toString()+'')
+  var thu = req.query.thu
+  res.json({day:getCountOf(ngayStart,ngayEnd,thu)})
 })
 function parseDate(input) {
   var parts = input.split('/');
