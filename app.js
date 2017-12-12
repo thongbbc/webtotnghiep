@@ -488,6 +488,49 @@ app.post("/addMonHoc",urlencodedParser,function(req,res){
 });
 ///-----------------------------------------------SIGN UP API
 
+app.post("/dangKy",urlencodedParser,function(req,res){
+ var account2 = account({
+      username: req.body.username,
+      password: req.body.password
+  });
+ account.find({}, function(err, data) {
+    if (err) res.send({status:"ERROR"});
+        var flag =false
+    data.map((value) => {
+      if (value.username == req.body.username) {
+        flag = true
+        res.send({status:"ERROR"})
+      }
+    })
+    if (flag == false)
+    account2.save(function(err) {
+      if (err) res.send({status:"ERROR"});
+      console.log("Da them vao database");
+      res.send({status:"OK"});
+    });
+  })
+})
+app.post("/dangNhap",urlencodedParser,function(req,res){
+ var account2 = account({
+      username: req.body.username,
+      password: req.body.password
+  });
+ account.find({}, function(err, data) {
+    if (err) res.send({status:"ERROR"});
+    var flag =false
+    data.map((value) => {
+      if (value.username == req.body.username && value.password == req.body.password) {
+        res.send({status:"OK"})
+        flag = true
+      }
+    })
+    if (flag == false)
+    res.send({status:"ERROR"})
+  })
+})
+
+
+
 app.get("/signUp/",function(req,res){
   var account2 = account({
       username: req.query.username,
