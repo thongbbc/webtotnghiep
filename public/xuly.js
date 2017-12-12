@@ -101,7 +101,7 @@ class RowData extends React.Component {
 
 	}
 
-	_onPressDELETESubject(value) {
+	_onPressDELETESubject(value,index) {
 		const self= this
 		var params = new URLSearchParams();
 		params.append('tenmonhoc', value.tenMonHoc);

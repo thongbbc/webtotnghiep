@@ -312,6 +312,20 @@ app.get("/dangKyMonHoc",function(req,res){
       res.json(k);
   })
 });
+app.get("/getMonDangKy",function(req,res){
+  dangKyMon.find({}, function(err, data) {
+    if (err) res.send({status:"ERROR"});
+      var k = []
+      if (data.length!=0) {
+        data.map((value,index) => {
+          if (value.id == req.query.id) {
+            k.push(value.tenmonhoc)
+          }
+        })  
+      }
+      res.json(k);
+  })
+});
 
 
 //  /saveJsonDangKyMon/?=[{"id":"2","hoten":"nguyenanhthong","mssv":"1313179","tenMonhoc":"hoa","timeStart":"321312","timeEnd":"312312","thu":"Mon"}]
