@@ -816,7 +816,7 @@ app.get("/getTripWithId",function(req,res){
 		var time = getHours(timeStamp)+":"+getMinutes(timeStamp)+":"+getSeconds(timeStamp)
 		k.push({"id":data[i].id,"time":time,"date":ngay,"typeTrip":data[i].typeTrip,"timeStamp":data[i].time});
     }
-    bubbeSortTime(k,true)
+    bubbeSortTime(k,false)
     for (var i=0;i<k.length;i++)
     {
 		m.push({"id":k[i].id,"time":k[i].time,"date":k[i].ngay,"typeTrip":k[i].typeTrip});
