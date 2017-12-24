@@ -819,7 +819,7 @@ app.get("/getTripWithId",function(req,res){
     bubbeSortTime(k,false)
     for (var i=0;i<k.length;i++)
     {
-		m.push({"id":k[i].id,"time":k[i].time,"date":k[i].ngay,"typeTrip":k[i].typeTrip});
+		m.push({"id":k[i].id,"time":k[i].time,"date":k[i].date,"typeTrip":k[i].typeTrip});
     }
 
       res.json(m);
