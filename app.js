@@ -812,8 +812,14 @@ app.get("/getTripWithId",function(req,res){
     for (var i=0;i<data.length;i++)
     {
 		var timeStamp = data[i].time
+		var phut = '0';
+		if (getMinutes(timeStamp) <=9) {
+			phut = '0'+getMinutes(timeStamp)
+		} else {
+			phut = getMinutes(timeStamp)
+		}
 		var ngay = getDay(timeStamp) +"/"+getMonth(timeStamp)+"/"+getYear(timeStamp)
-		var time = getHours(timeStamp)+":"+getMinutes(timeStamp)+":"+getSeconds(timeStamp)
+		var time = getHours(timeStamp)+":"+phut+":"+getSeconds(timeStamp)
 		k.push({"id":data[i].id,"time":time,"date":ngay,"typeTrip":data[i].typeTrip,"timeStamp":data[i].time});
     }
     bubbeSortTime(k,false)
