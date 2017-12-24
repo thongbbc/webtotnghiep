@@ -773,6 +773,19 @@ app.get("/allData2",function(req,res){
       res.json(k);
   })
 });
+app.get("/getTripWithId",function(req,res){
+  danhSach2.find({id: req.query.id}, function(err, data) {
+    var k=[];
+    for (var i=0;i<data.length;i++)
+    {
+		var timeStamp = data[i].time
+		var ngay = getDay(timeStamp) +"/"+getMonth(timeStamp)+"/"+getYear(timeStamp)
+		var time = getHours(timeStamp)+":"+getMinutes(timeStamp)+":"+getSeconds(timeStamp)
+		k.push({"id":data[i].id,"time":time,"date":ngay,"typeTrip":data[i].typeTrip});
+    }
+      res.json(k);
+  })
+});
 //Lấy thông tin vào ra theo id
 app.get("/getId",function(req,res){
 	danhSach2.find({id: req.query.id}, function(err, data) {
