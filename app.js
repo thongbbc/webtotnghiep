@@ -759,7 +759,39 @@ function bubbeSort(array,flag) {
       }
     }
 }
-
+function bubbeSortTime(array,flag) {
+    var temp,i,j;
+    var swapped = false
+    if (flag) {
+      for (i=0;i<array.length-1;i++) {
+        for (j=0;j<array.length-1-i;j++) {
+          if (parseInt(array[j].timeStamp)>parseInt(array[j+1].timeStamp)) {
+            temp = array[j]
+            array[j]=array[j+1]
+            array[j+1] = temp
+            swapped = true
+          }
+        }
+        if (!swapped) {
+          break
+        }
+      }
+    } else {
+      for (i=0;i<array.length-1;i++) {
+        for (j=0;j<array.length-1-i;j++) {
+          if (parseInt(array[j].timeStamp)<parseInt(array[j+1].timeStamp)) {
+            temp = array[j]
+            array[j]=array[j+1]
+            array[j+1] = temp
+            swapped = true
+          }
+        }
+        if (!swapped) {
+          break
+        }
+      }
+    }
+}
 app.get("/allData2",function(req,res){
   danhSach2.find({}, function(err, data) {
     var k=[];
@@ -776,14 +808,21 @@ app.get("/allData2",function(req,res){
 app.get("/getTripWithId",function(req,res){
   danhSach2.find({id: req.query.id}, function(err, data) {
     var k=[];
+    var m=[];
     for (var i=0;i<data.length;i++)
     {
 		var timeStamp = data[i].time
 		var ngay = getDay(timeStamp) +"/"+getMonth(timeStamp)+"/"+getYear(timeStamp)
 		var time = getHours(timeStamp)+":"+getMinutes(timeStamp)+":"+getSeconds(timeStamp)
-		k.push({"id":data[i].id,"time":time,"date":ngay,"typeTrip":data[i].typeTrip});
+		k.push({"id":data[i].id,"time":time,"date":ngay,"typeTrip":data[i].typeTrip,"timeStamp":data[i].time});
     }
-      res.json(k);
+    bubbeSortTime(k,true)
+    for (var i=0;i<k.length;i++)
+    {
+		m.push({"id":k[i].id,"time":k[i].time,"date":k[i].ngay,"typeTrip":k[i].typeTrip,"timeStamp":k[i].time});
+    }
+
+      res.json(m);
   })
 });
 //Lấy thông tin vào ra theo id
