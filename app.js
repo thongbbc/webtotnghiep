@@ -699,24 +699,97 @@ app.post("/saveTRIP/",urlencodedParser,function(req,res){
 									console.log("////////")
 									console.log(hourCheck)
 									console.log(minutesCheck)
-									if ((hourCheck == hourOrigin) && ((minutesCheck>=minutesOrigin)&&(minutesCheck<=minutesOrigin+15)))
-									{
-										const fullTime = hourCheck.toString()+":"+minutesCheck.toString();
-										var dataMonHoc = {"id":sv.id,"hoten":sv.hoten,"tenmonhoc":item.tenMonHoc,"time":fullTime,
-				            			"date":fullDate,"thu":item.thu}; 
-				            			console.log("DATA DIEM DANH : " +JSON.stringify(dataMonHoc))
-				            			var diemDanh1 = diemDanh({
-									    	id:dataMonHoc.id,
-											hoten:dataMonHoc.hoten,
-											tenmonhoc:dataMonHoc.tenmonhoc,
-											time:dataMonHoc.time,
-											date:dataMonHoc.date,
-											thu:dataMonHoc.thu
-										});
-										diemDanh1.save(function(err) {
-										    console.log("Da them vao database");
-										});
+
+
+									var hourOrigin2 = hourOrigin;
+									var minutesOrigin2 = minutesOrigin;
+									if (minutesOrigin+15>59) {
+										if (hourOrigin == 23)
+											hourOrigin2 = 0
+										else
+											hourOrigin2++;
+										minutesOrigin2 = minutesOrigin+15-60;
+									} else {
+										minutesOrigin2 = minutesOrigin +15;
 									}
+
+									// if ((hourCheck == hourOrigin) && ((minutesCheck>=minutesOrigin)&&(minutesCheck<=minutesOrigin+15)))
+									// {
+									if (hourOrigin==23 && hourOrigin2==0) {
+										if ((hourCheck==hourOrigin && minutesCheck>=minutesOrigin)||(hourCheck==hourOrigin2 && minutesCheck<=minutesOrigin2))
+										{
+											const fullTime = hourCheck.toString()+":"+minutesCheck.toString();
+											var dataMonHoc = {"id":sv.id,"hoten":sv.hoten,"tenmonhoc":item.tenMonHoc,"time":fullTime,
+					            			"date":fullDate,"thu":item.thu}; 
+					            			console.log("DATA DIEM DANH : " +JSON.stringify(dataMonHoc))
+					            			var diemDanh1 = diemDanh({
+										    	id:dataMonHoc.id,
+												hoten:dataMonHoc.hoten,
+												tenmonhoc:dataMonHoc.tenmonhoc,
+												time:dataMonHoc.time,
+												date:dataMonHoc.date,
+												thu:dataMonHoc.thu
+											});
+											diemDanh1.save(function(err) {
+											    console.log("Da them vao database");
+											});
+										}
+									} else {
+										if (hourCheck>=hourOrigin&&hourCheck<=hourOrigin2) {
+											if ((hourCheck==hourOrigin && minutesCheck>=minutesOrigin)||(hourCheck==hourOrigin2 && minutesCheck<=minutesOrigin2))
+											{
+												const fullTime = hourCheck.toString()+":"+minutesCheck.toString();
+												var dataMonHoc = {"id":sv.id,"hoten":sv.hoten,"tenmonhoc":item.tenMonHoc,"time":fullTime,
+						            			"date":fullDate,"thu":item.thu}; 
+						            			console.log("DATA DIEM DANH : " +JSON.stringify(dataMonHoc))
+						            			var diemDanh1 = diemDanh({
+											    	id:dataMonHoc.id,
+													hoten:dataMonHoc.hoten,
+													tenmonhoc:dataMonHoc.tenmonhoc,
+													time:dataMonHoc.time,
+													date:dataMonHoc.date,
+													thu:dataMonHoc.thu
+												});
+												diemDanh1.save(function(err) {
+												    console.log("Da them vao database");
+												});
+											}
+										} else {
+											if (minutesCheck>=minutesOrigin && minutesCheck<=minutesOrigin2) {
+												const fullTime = hourCheck.toString()+":"+minutesCheck.toString();
+												var dataMonHoc = {"id":sv.id,"hoten":sv.hoten,"tenmonhoc":item.tenMonHoc,"time":fullTime,
+						            			"date":fullDate,"thu":item.thu}; 
+						            			console.log("DATA DIEM DANH : " +JSON.stringify(dataMonHoc))
+						            			var diemDanh1 = diemDanh({
+											    	id:dataMonHoc.id,
+													hoten:dataMonHoc.hoten,
+													tenmonhoc:dataMonHoc.tenmonhoc,
+													time:dataMonHoc.time,
+													date:dataMonHoc.date,
+													thu:dataMonHoc.thu
+												});
+												diemDanh1.save(function(err) {
+												    console.log("Da them vao database");
+												});
+											}
+										}
+										// const fullTime = hourCheck.toString()+":"+minutesCheck.toString();
+										// var dataMonHoc = {"id":sv.id,"hoten":sv.hoten,"tenmonhoc":item.tenMonHoc,"time":fullTime,
+				      //       			"date":fullDate,"thu":item.thu}; 
+				      //       			console.log("DATA DIEM DANH : " +JSON.stringify(dataMonHoc))
+				      //       			var diemDanh1 = diemDanh({
+									 //    	id:dataMonHoc.id,
+										// 	hoten:dataMonHoc.hoten,
+										// 	tenmonhoc:dataMonHoc.tenmonhoc,
+										// 	time:dataMonHoc.time,
+										// 	date:dataMonHoc.date,
+										// 	thu:dataMonHoc.thu
+										// });
+										// diemDanh1.save(function(err) {
+										//     console.log("Da them vao database");
+										// });
+									}
+									// }
 								}
 							})
 				        })
