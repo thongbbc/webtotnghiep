@@ -14,6 +14,7 @@ class RowData extends React.Component {
 			arrayMonHoc: [],
 			selectedCheckTrip :0,
 			listDetailCount:[],
+			listTemp:[],
 			listCheck:[]
 		}
 	}
@@ -841,7 +842,7 @@ class RowData extends React.Component {
 																sumTime=sumTime-60
 																hour++;
 															}
-															alert("Thời gian ở trong phòng trong ngày: "+value2.date+"\nLà ->>>"+hour+' giờ'+' '+sumTime+" phút")
+															alert("Thời gian ở trong phòng trong ngày: "+value2.date+"\nLà ->>> "+hour+' giờ'+' '+sumTime+" phút")
 														} else {
 															alert('PLEASE CHECK YOUR NETWORK')
 														}
@@ -929,8 +930,27 @@ class RowData extends React.Component {
 		return dulieu
 	}
 	_renderDetailTrip() {
+		const {listTemp} = this.state
 		return(
 			<div>
+				<input ref='search' style = {{width:"80%",height:40}}/>
+				<button onClick={()=>{
+					if (this.refs.search.value == '') {
+						this.setState({
+							listDetailCount :listTemp
+						})
+					} else {
+						var array= [];
+						listTemp.map((value)=> {
+							if (value.date == this.refs.search.value) {
+								array.push(value)
+							}
+						})
+						this.setState({
+							listDetailCount:array
+						})
+					}
+				}} style = {{height:45,width:'10%'}}>SEARCH</button>
 				<table style={{height:'100%',width:"100%"}}>
 					<thead>
 						<tr style={{color:'white',backgroundColor:'#157F90',height:50}}>
@@ -1181,7 +1201,8 @@ class RowData extends React.Component {
 		}).then(function(response) {
 			if (response.status == 200) {
 				self.setState({
-					listDetailCount:response.data
+					listDetailCount:response.data,
+					listTemp :response.data
 				})
 			} else {
 				alert('GET DETAIL TRIP OF THIS ID FAILED')
