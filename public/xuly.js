@@ -805,14 +805,47 @@ class RowData extends React.Component {
 
 						<td >
 							<div style={{flex:1,width:'100%',height:'100%',alignItems:'center',textAlign:'center'}}>
-								{
+							{
 									value.typeTrip==false?
 									<button onClick={()=>{
 										var arrTime = [];
 										listDetailCount.map((value2)=>{
 											if (value2.id == value.id && value2.date == value.date && value2.typeTrip == true) {
 												if (value.count == value2.count) {
-													alert("haha")
+													const self = this
+													axios({
+													method:'get',
+													url:'/getTrip?id='+value2.id+'&date='+value2.date,
+													responseType:'jsonp'
+													}).then(function(response) {
+														if (response.status == 200) {
+															var arrayData = response.data;
+															var sumTime =0;
+															var minutesTrue=0;
+															var minutesFalse=0;
+															for (var i =0 ;i<arrayData.length;i++) {
+																var part = arrayData[i].time.split(':');
+																if (arrayData[i].typeTrip)
+																minutesTrue = parseInt(part[0])*60+parseInt(part[1])
+																else 
+																{	
+																	// alert(minutesTrue)
+																	minutesFalse = parseInt(part[0])*60+parseInt(part[1])
+																	sumTime = sumTime+ (minutesFalse-minutesTrue);
+																
+																}
+																console.log(minutesTrue+" "+minutesFalse)
+															}
+															var hour =0;
+															while (sumTime-60>=0) {
+																sumTime=sumTime-60
+																hour++;
+															}
+															alert("Thời gian ở trong phòng trong ngày: "+value2.date+"\nLà ->>>"+hour+' giờ'+' '+sumTime+" phút")
+														} else {
+															alert('PLEASE CHECK YOUR NETWORK')
+														}
+													})
 												} else {
 													alert ("CHECK FAILED")
 												}
@@ -820,7 +853,7 @@ class RowData extends React.Component {
 										})
 									}} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>CHECK SUM TIME</button>
 									:null
-								}
+							}
 							</div>
 						</td>
 
@@ -848,12 +881,33 @@ class RowData extends React.Component {
 													const self = this
 													axios({
 													method:'get',
-													url:'/allData2',
+													url:'/getTrip?id='+value2.id+'&date='+value2.date,
 													responseType:'jsonp'
 													}).then(function(response) {
 														if (response.status == 200) {
 															var arrayData = response.data;
-															alert(JSON.stringify(arrayData))
+															var sumTime =0;
+															var minutesTrue=0;
+															var minutesFalse=0;
+															for (var i =0 ;i<arrayData.length;i++) {
+																var part = arrayData[i].time.split(':');
+																if (arrayData[i].typeTrip)
+																minutesTrue = parseInt(part[0])*60+parseInt(part[1])
+																else 
+																{	
+																	// alert(minutesTrue)
+																	minutesFalse = parseInt(part[0])*60+parseInt(part[1])
+																	sumTime = sumTime+ (minutesFalse-minutesTrue);
+																
+																}
+																console.log(minutesTrue+" "+minutesFalse)
+															}
+															var hour =0;
+															while (sumTime-60>=0) {
+																sumTime=sumTime-60
+																hour++;
+															}
+															alert("Thời gian ở trong phòng trong ngày: "+value2.date+"\nLà ->>>"+hour+' giờ'+' '+sumTime+" phút")
 														} else {
 															alert('PLEASE CHECK YOUR NETWORK')
 														}
