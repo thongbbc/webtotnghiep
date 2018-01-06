@@ -958,6 +958,21 @@ function bubbeSortTime(array,flag) {
       }
     }
 }
+app.get("/getTrip",function(req,res){
+  danhSach2.find({id:req.query.id}, function(err, data) {
+    var k=[];
+    for (var i=0;i<data.length;i++)
+    {
+      var timeStamp = data[i].time
+      var timeStampIn = parseInt(timeStamp)
+      var ngay = getDay(timeStampIn) +"/"+getMonth(timeStampIn)+"/"+getYear(timeStampIn)
+      var time = getHours(timeStampIn)+":"+getMinutes(timeStampIn)+":"+getSeconds(timeStampIn)
+      if (ngay==req.query.date)
+      k.push({"id":data[i].id,"time":time,"date":ngay,"typeTrip":data[i].typeTrip});
+    }
+      res.json(k);
+  })
+});
 app.get("/allData2",function(req,res){
   danhSach2.find({}, function(err, data) {
     var k=[];

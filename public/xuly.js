@@ -805,7 +805,22 @@ class RowData extends React.Component {
 
 						<td >
 							<div style={{flex:1,width:'100%',height:'100%',alignItems:'center',textAlign:'center'}}>
-								<button onClick={this._onPressDeleteRegisterSubject.bind(this,value,index)} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>DELETE</button>
+								{
+									value.typeTrip==false?
+									<button onClick={()=>{
+										var arrTime = [];
+										listDetailCount.map((value2)=>{
+											if (value2.id == value.id && value2.date == value.date && value2.typeTrip == true) {
+												if (value.count == value2.count) {
+													alert("haha")
+												} else {
+													alert ("CHECK FAILED")
+												}
+											}
+										})
+									}} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>CHECK SUM TIME</button>
+									:null
+								}
 							</div>
 						</td>
 
@@ -823,7 +838,34 @@ class RowData extends React.Component {
 
 						<td >
 							<div style={{height:'100%',width:'100%',alignItems:'center',textAlign:'center'}}>
-								<button onClick={this._onPressDeleteRegisterSubject.bind(this,value,index)} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>DELETE</button>
+							{
+									value.typeTrip==false?
+									<button onClick={()=>{
+										var arrTime = [];
+										listDetailCount.map((value2)=>{
+											if (value2.id == value.id && value2.date == value.date && value2.typeTrip == true) {
+												if (value.count == value2.count) {
+													const self = this
+													axios({
+													method:'get',
+													url:'/allData2',
+													responseType:'jsonp'
+													}).then(function(response) {
+														if (response.status == 200) {
+															var arrayData = response.data;
+															alert(JSON.stringify(arrayData))
+														} else {
+															alert('PLEASE CHECK YOUR NETWORK')
+														}
+													})
+												} else {
+													alert ("CHECK FAILED")
+												}
+											}
+										})
+									}} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>CHECK SUM TIME</button>
+									:null
+							}
 							</div>
 						</td>
 					</tr>
@@ -947,6 +989,8 @@ class RowData extends React.Component {
 			return this._renderDetailTrip()
 		} else if (kindScreen == 10) {
 			return this._renderCheckSV()
+		} else if(kindScreen == 20) {
+			return;
 		}
 	}
 	_loadDataDanhSachRaVao() {
