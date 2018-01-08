@@ -63,7 +63,32 @@ app.set("views","./views");
 app.use(express.static("public"));
 
 
+app.post("/signUpWeb",urlencodedParser,function(req,res){
+  var account2 = account({
+      username: req.body.username,
+      password: req.body.password
+  });
+ account.find({}, function(err, data) {
+    if (err) res.send({status:"ERROR"});
+        var flag =false
+    data.map((value) => {
+      if (value.username == req.body.username) {
+        flag = true
+        res.send({status:"Your username existed, please use difference username and try again"})
+      }
+    })
+    if (flag == false)
+    account2.save(function(err) {
+      if (err) res.send({status:"ERROR"});
+      console.log("Da them vao database");
+      res.render('signIn',{check:null})
+    });
+  })
+})
 
+app.get("/signup",function(req,res) {
+  res.render('signUp',{check:null});
+})
 
 
 app.post("/trangchu",urlencodedParser,function(req,res){
