@@ -16,7 +16,8 @@ class RowData extends React.Component {
 			selectedCheckTrip :0,
 			listDetailCount:[],
 			listTemp:[],
-			listCheck:[]
+			listCheck:[],
+			sumPercent:''
 		}
 	}
 	componentDidMount() {
@@ -287,26 +288,47 @@ class RowData extends React.Component {
 		})
 		return dulieu
 	}
+	parseDate(input){
+	  var parts = input.split('/');
+	  return new Date(parts[2], parts[1]-1, parts[0]);
+	}
 	_renderDanhSachRaVao(){
 		const {dataSourceTempDanhSachRaVao} = this.state
 		return(
 			<div>
-				<input ref='search2' style = {{width:"80%",height:40}}/>
+				<input placeholder="Date Start" ref='search2' style = {{width:"80%",height:40}}/>
+				<input placeholder="Date End" ref='search3' style = {{width:"80%",height:40}}/>
 				<button onClick={()=>{
-					if (this.refs.search2.value == '') {
+					if (this.refs.search2.value == '' && this.refs.search3.value=='') {
+
+
 						this.setState({
 							dataSourceDanhSachRaVao :dataSourceTempDanhSachRaVao
 						})
-					} else {
-						var array= [];
-						dataSourceTempDanhSachRaVao.map((value)=> {
-							if (value.date == this.refs.search2.value) {
-								array.push(value)
-							}
+					} else if (this.refs.search2.value != '' && this.refs.search3.value!=''){
+						var dateObj1 = this.parseDate(this.refs.search2.value);
+						var dateObj2 = this.parseDate(this.refs.search3.value);
+
+						var array = [];
+
+						while ( dateObj1.getTime() <= dateObj2.getTime() )
+						{
+							array.push(dateObj1.getDate()+'/'+(dateObj1.getMonth()+1)+'/'+dateObj1.getFullYear())
+						   dateObj1.setDate(dateObj1.getDate() + 1);
+						}
+						var array2= [];
+						array.map((valuedate)=>{
+							dataSourceTempDanhSachRaVao.map((value)=> {
+								if (value.date == valuedate) {
+									array2.push(value)
+								}
+							})
 						})
 						this.setState({
-							dataSourceDanhSachRaVao:array
+							dataSourceDanhSachRaVao:array2
 						})
+					} else {
+						alert("Please Press Full Date Start And Date End")
 					}
 				}} style = {{height:45,width:'10%'}}>SEARCH</button>
 				<table style={{width:"100%"}}>
@@ -680,7 +702,7 @@ class RowData extends React.Component {
 	_renderRegisterSubjectSV() {
 		return(
 			<div style={{height:'100%'}}>
-				<select style={{height:'30%',float:'left',display:'inline-block',width:200}} onChange={this.handleChangeSelectedMonHoc.bind(this)}>
+				<select style={{height:'10%',float:'left',display:'inline-block',width:200}} onChange={this.handleChangeSelectedMonHoc.bind(this)}>
 					{this._renderAllMonHoc()}
 				</select>
 				<button onClick = {this._onPressAcceptRegisterSubject.bind(this)} style={{height:50,float:'left',width:'30%'}}>UPDATE</button>
@@ -1002,7 +1024,6 @@ class RowData extends React.Component {
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.id}</div></td>
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.hoten}</div></td>
 						<td ><div style={{flex:1,alignItems:'center',textAlign:'center'}}>{value.percent+' %'}</div></td>
-
 						<td >
 							<div style={{flex:1,width:'100%',height:'100%',alignItems:'center',textAlign:'center'}}>
 								<button onClick={this._onPressDeleteRegisterSubject.bind(this,value,index)} style={{color:'white',backgroundColor:'rgba(244,66,66,0.7)',alignItems:'center',textAlign:'center',height:'100%',width:'100%',display: 'inline-block'}}>DELETE</button>
@@ -1038,9 +1059,10 @@ class RowData extends React.Component {
 		return dulieu
 	}
 	_renderCheckSV() {
+		const {sumPercent} = this.state
 		return (
 			<div style={{height:'100%'}}>
-			<select style={{height:'30%',float:'left',display:'inline-block',width:200}} onChange={this._handleClickChooseSubjectCheck.bind(this)}>
+			<select style={{height:'10%',float:'left',display:'inline-block',width:200}} onChange={this._handleClickChooseSubjectCheck.bind(this)}>
 				{this._renderAllMonHoc2()}
 			</select>
 			<table style={{width:"100%"}}>
@@ -1049,7 +1071,7 @@ class RowData extends React.Component {
 							<th>ID</th>
 							<th>NAME</th>
 							<th>Percent</th>
-							<th></th>
+							<th>SUM Percent:{sumPercent}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -1238,8 +1260,16 @@ class RowData extends React.Component {
 		axios.post('/listDiemDanh',params)
 		  .then(response => {
 				if (response.status == '200') {
+					var sum =0;
+					response.data.map((value)=> {
+						if (parseInt(value.percent)==100) {
+							sum++;
+						} 
+					})
+					sum=sum*100/response.data.length;
 					self.setState({
 						listCheck:response.data,
+						sumPercent:sum+'',
 						animating:false								 
 					})
 				} else {
@@ -1269,8 +1299,16 @@ class RowData extends React.Component {
 				 axios.post('/listDiemDanh',params)
 				   .then(response => {
 						 if (response.status == '200') {
+						 	var sum =0;
+							response.data.map((value)=> {
+								if (parseInt(value.percent)==100) {
+									sum++;
+								} 
+							})
+							sum=sum*100/response.data.length;
 							 self.setState({
 								 listCheck:response.data,
+								 sumPercent:sum+'',
 								 animating:false								 
 							 })
 						 } else {
