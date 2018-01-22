@@ -1,5 +1,5 @@
-class Main extends React.Component {
-  _onClickSignIn() {
+class SignUp extends React.Component {
+  _onClickSignUp() {
     if (this.refs.user.value != '' && this.refs.pass.value!= '') {
         var form = this.refs.form
         form.submit();
@@ -18,9 +18,9 @@ class Main extends React.Component {
     return(
       <div class="container">
         <div class="card card-login mx-auto mt-5">
-          <div class="card-header">Login</div>
+          <div class="card-header">SignUp</div>
           <div class="card-body">
-            <form ref = 'form' action='/trangchu' method='post'>
+            <form ref = 'form' action='/signUpWeb' method='post'>
               <div class="form-group">
                 <label for="exampleInputEmail1">Email address</label>
                 <input ref = 'user' name='username' class="form-control" id="exampleInputEmail1" type="email" aria-describedby="emailHelp" placeholder="Enter email"/>
@@ -29,11 +29,8 @@ class Main extends React.Component {
                 <label for="exampleInputPassword1">Password</label>
                 <input ref = 'pass'  name='password' class="form-control" id="exampleInputPassword1" type="password" placeholder="Password"/>
               </div>
-              <a class="btn btn-primary btn-block" style={{color:'white'}} onClick={this._onClickSignIn.bind(this)}>Login</a>
+              <a class="btn btn-primary btn-block" style={{color:'white'}} onClick={this._onClickSignUp.bind(this)}>SignUp</a>
             </form>
-            <div class="text-center">
-              <a class="d-block small mt-3" href="/signup">Register an Account</a>
-            </div>
           </div>
         </div>
       </div>
@@ -41,5 +38,5 @@ class Main extends React.Component {
   }
 }
 ReactDOM.render(
-		<Main/>
+		<SignUp/>
 ,document.getElementById("root"));
