@@ -7,6 +7,7 @@ class RowData extends React.Component {
 			dataSource:[],
 			animating:true,
 			kindScreen:0,
+			dataSourceTempDanhSachRaVao:[],
 			dataSourceDanhSachRaVao:[],
 			dataSourceListSubject:[],
 			dataSourceRegisterSubject:[],
@@ -287,8 +288,27 @@ class RowData extends React.Component {
 		return dulieu
 	}
 	_renderDanhSachRaVao(){
+		const {dataSourceTempDanhSachRaVao} = this.state
 		return(
 			<div>
+				<input ref='search2' style = {{width:"80%",height:40}}/>
+				<button onClick={()=>{
+					if (this.refs.search2.value == '') {
+						this.setState({
+							dataSourceDanhSachRaVao :dataSourceTempDanhSachRaVao
+						})
+					} else {
+						var array= [];
+						dataSourceTempDanhSachRaVao.map((value)=> {
+							if (value.date == this.refs.search2.value) {
+								array.push(value)
+							}
+						})
+						this.setState({
+							dataSourceDanhSachRaVao:array
+						})
+					}
+				}} style = {{height:45,width:'10%'}}>SEARCH</button>
 				<table style={{width:"100%"}}>
 					<thead>
 						<tr style={{color:'white',backgroundColor:'#157F90',height:50}}>
@@ -1088,6 +1108,7 @@ class RowData extends React.Component {
 					})
 		  		self.setState({
 		  			dataSourceDanhSachRaVao:data,
+		  			dataSourceTempDanhSachRaVao:data,
 		  			animating:false
 		  		})
 		  	} else {
