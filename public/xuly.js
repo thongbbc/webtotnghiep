@@ -1262,11 +1262,10 @@ class RowData extends React.Component {
 				if (response.status == '200') {
 					var sum =0;
 					response.data.map((value)=> {
-						if (parseInt(value.percent)==100) {
-							sum++;
-						} 
+							sum=sum + parseInt(value.percent);
 					})
-					sum=sum*100/response.data.length;
+
+					sum=(parseFloat(((sum)/response.data.length)).toPrecision(2))
 					self.setState({
 						listCheck:response.data,
 						sumPercent:sum+'',
@@ -1301,11 +1300,9 @@ class RowData extends React.Component {
 						 if (response.status == '200') {
 						 	var sum =0;
 							response.data.map((value)=> {
-								if (parseInt(value.percent)==100) {
-									sum++;
-								} 
+								sum=sum + parseInt(value.percent);
 							})
-							sum=sum*100/response.data.length;
+							sum=(parseFloat(((sum)/response.data.length)).toPrecision(2))
 							 self.setState({
 								 listCheck:response.data,
 								 sumPercent:sum+'',
