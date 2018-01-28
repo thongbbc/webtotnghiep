@@ -179,7 +179,14 @@ app.post("/listDiemDanh",urlencodedParser,function(req,res){
 								})
 								var mangsongay=getCountOf(k1[0].datestart,k1[0].dateend,k1[0].thu)
 								console.log(count+" "+mangsongay.length+" "+k1[0].datestart+" "+k1[0].dateend)
-
+                if (count == mangsongay.length) {
+                  jsonXuat.push({
+                  percent: 100+'',
+                  tenmonhoc:monHoc,
+                  id:value1.id,
+                  hoten:value1.hoten
+                  })
+                } else
 								jsonXuat.push({
 									percent: (parseFloat(((count *100)/mangsongay.length)).toPrecision(2))+'',
 									tenmonhoc:monHoc,
